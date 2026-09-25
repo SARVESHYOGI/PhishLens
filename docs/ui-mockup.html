@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MailSleuth AI — UI Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0A0F1E;
+    --surface: #111827;
+    --card: #0F172A;
+    --border: #1E293B;
+    --border-strong: #334155;
+    --text: #E2E8F0;
+    --text-dim: #94A3B8;
+    --text-faint: #64748B;
+    --cyan: #22D3EE;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+    --success: #10B981;
+    --info: #3B82F6;
+    --violet: #8B5CF6;
+    --radius: 12px;
+    --shadow: 0 0 40px rgba(34,211,238,.06), 0 10px 30px rgba(0,0,0,.45);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: "Inter", system-ui, sans-serif; font-size: 14px; line-height: 1.5; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+
+  /* ---------- top bar ---------- */
+  .topbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 20px; height: 60px; padding: 0 24px; background: rgba(10,15,30,.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: -.02em; }
+  .logo-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, var(--cyan), var(--info)); color: #04121a; }
+  .nav { display: flex; gap: 6px; margin-left: 8px; flex: 1; }
+  .nav button { border: 0; background: transparent; color: var(--text-dim); font: inherit; font-size: 13px; font-weight: 500; padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+  .nav button:hover { color: var(--text); background: var(--surface); }
+  .nav button.active { color: var(--cyan); background: rgba(34,211,238,.1); }
+  .top-right { display: flex; align-items: center; gap: 10px; color: var(--text-dim); font-size: 12px; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--violet), var(--info)); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px 80px; }
+  .page { display: none; animation: fade .25s ease; }
+  .page.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- shared bits ---------- */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card-h { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .card-h h3 { font-size: 14px; font-weight: 600; }
+  .card-h .sub { color: var(--text-faint); font-size: 12px; }
+  .card-b { padding: 16px 18px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-strong); color: var(--text-dim); }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .pill.red { color: var(--danger); border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08); }
+  .pill.amber { color: var(--warning); border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); }
+  .pill.green { color: var(--success); border-color: rgba(16,185,129,.35); background: rgba(16,185,129,.08); }
+  .pill.blue { color: var(--info); border-color: rgba(59,130,246,.35); background: rgba(59,130,246,.08); }
+  .pill.cyan { color: var(--cyan); border-color: rgba(34,211,238,.35); background: rgba(34,211,238,.08); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 600; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; }
+  .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .btn.primary { background: linear-gradient(135deg, var(--cyan), var(--info)); border: 0; color: #04121a; font-weight: 700; }
+  .btn.primary:hover { filter: brightness(1.1); color: #04121a; }
+  .btn.danger { border-color: rgba(239,68,68,.4); color: var(--danger); }
+  .btn[disabled] { opacity: .4; cursor: not-allowed; }
+  .grid { display: grid; gap: 18px; }
+  .gc-2 { grid-template-columns: 2fr 1fr; }
+  .gc-37 { grid-template-columns: 37% 63%; }
+  .gc-3 { grid-template-columns: repeat(3, 1fr); }
+  .gc-4 { grid-template-columns: repeat(4, 1fr); }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint); font-weight: 600; margin-bottom: 6px; }
+  .muted { color: var(--text-dim); }
+  .faint { color: var(--text-faint); }
+  .mt { margin-top: 18px; }
+
+  /* ---------- landing ---------- */
+  .hero { text-align: center; padding: 60px 0 34px; }
+  .hero .kicker { display: inline-flex; gap: 6px; padding: 5px 14px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--cyan); font-size: 12px; font-weight: 600; background: rgba(34,211,238,.06); margin-bottom: 18px; }
+  .hero h1 { font-size: 42px; font-weight: 800; letter-spacing: -.03em; }
+  .hero h1 span { color: var(--cyan); }
+  .hero p { color: var(--text-dim); margin-top: 12px; font-size: 16px; max-width: 560px; margin-inline: auto; }
+  .dropzone { margin: 30px auto 18px; max-width: 620px; padding: 56px 24px; text-align: center; border: 2px dashed var(--border-strong); border-radius: 16px; background: rgba(15,23,42,.5); cursor: pointer; transition: .2s; }
+  .dropzone:hover { border-color: var(--cyan); background: rgba(34,211,238,.04); }
+  .dz-icon { width: 54px; height: 54px; margin: 0 auto 14px; border-radius: 14px; display: grid; place-items: center; background: rgba(34,211,238,.1); color: var(--cyan); }
+  .dropzone h3 { font-size: 17px; font-weight: 600; }
+  .dropzone p { color: var(--text-faint); font-size: 13px; margin-top: 6px; }
+  .scanning .dz-ic:not(.scan) { display: none; }
+  .scan { display: none; }
+  .scanning .scan { display: block; }
+  .radar { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--cyan); position: relative; margin: 0 auto 18px; overflow: hidden; }
+  .radar::after { content: ""; position: absolute; inset: 0; background: conic-gradient(from 0deg, rgba(34,211,238,.5), transparent 40%); animation: spin 1.2s linear infinite; }
+  .radar .ring { position: absolute; inset: 10px; border: 1px solid rgba(34,211,238,.6); border-radius: 50%; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sample { text-align: center; }
+  .sample a { color: var(--cyan); font-size: 13px; cursor: pointer; text-decoration: none; border-bottom: 1px dotted; }
+  .pipeline { display: flex; justify-content: center; gap: 10px; margin-top: 34px; flex-wrap: wrap; }
+  .pipeline .pill { text-transform: uppercase; font-size: 10px; letter-spacing: .08em; }
+
+  /* ---------- gauge ---------- */
+  .gauge { width: 148px; height: 148px; margin: 0 auto; }
+  .gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .gauge .bg { stroke: #1E293B; }
+  .gauge .fg { stroke: var(--danger); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+  .verdict-banner { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 18px; border-radius: var(--radius); border: 1px solid rgba(239,68,68,.4); background: linear-gradient(90deg, rgba(239,68,68,.14), rgba(10,15,30,0)); margin-bottom: 16px; }
+  .verdict-banner .vb-title { font-size: 20px; font-weight: 800; color: var(--danger); letter-spacing: .02em; }
+  .verdict-banner .vb-sub { font-size: 12px; color: var(--text-dim); }
+
+  /* ---------- auth rows ---------- */
+  .auth-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .auth-row:last-child { border-bottom: 0; }
+  .auth-row .name { font-weight: 600; width: 120px; }
+  .auth-row .detail { color: var(--text-faint); font-size: 12px; }
+  .check { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+  .check.fail { background: rgba(239,68,68,.15); color: var(--danger); }
+  .check.pass { background: rgba(16,185,129,.15); color: var(--success); }
+  .check.none { background: rgba(100,116,139,.15); color: var(--text-faint); }
+
+  /* ---------- url rows ---------- */
+  .url-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .url-row:last-child { border-bottom: 0; }
+  .url-row .u-hat { color: var(--text-faint); font-size: 11px; }
+
+  /* ---------- content indicators ---------- */
+  .ck { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; }
+  .ck .box { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+  .ck.warn .box { background: rgba(245,158,11,.15); color: var(--warning); }
+  .ck.ok .box { background: rgba(16,185,129,.15); color: var(--success); }
+
+  /* ---------- ml bars ---------- */
+  .ml-bar { margin-bottom: 10px; }
+  .ml-bar .top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+  .ml-bar .track { height: 7px; border-radius: 99px; background: #1E293B; overflow: hidden; }
+  .ml-bar .fill { height: 100%; border-radius: 99px; }
+
+  /* ---------- timeline ---------- */
+  .tl { position: relative; padding-left: 26px; }
+  .tl::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--border-strong); }
+  .tl-item { position: relative; padding: 8px 0 16px; }
+  .tl-item::before { content: ""; position: absolute; left: -25px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--card); border: 3px solid var(--info); }
+  .tl-item.warn::before { border-color: var(--warning); }
+  .tl-item.danger::before { border-color: var(--danger); }
+  .tl-item .t-title { font-weight: 600; font-size: 13px; }
+  .tl-item .t-time { color: var(--text-faint); font-size: 11px; font-family: "JetBrains Mono", monospace; }
+  .tl-item .t-desc { color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+
+  /* ---------- evidence explorer ---------- */
+  .evidence-grid { display: flex; flex-direction: column; gap: 10px; }
+  .ev-card { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: rgba(15,23,42,.6); cursor: pointer; transition: .15s; }
+  .ev-card:hover { border-color: var(--cyan); background: rgba(34,211,238,.04); }
+  .ev-id { font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700; color: var(--cyan); min-width: 52px; padding-top: 2px; }
+  .ev-title { font-weight: 600; font-size: 13px; }
+  .ev-desc { color: var(--text-dim); font-size: 12px; margin-top: 3px; }
+
+  /* ---------- ioc table ---------- */
+  table.ioc { width: 100%; border-collapse: collapse; }
+  table.ioc th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 600; }
+  table.ioc td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  table.ioc tr:hover td { background: rgba(34,211,238,.03); }
+  .ioc-type { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  .copy { color: var(--text-faint); cursor: pointer; font-size: 12px; }
+  .copy:hover { color: var(--cyan); }
+
+  /* ---------- graph ---------- */
+  .graph-canvas { position: relative; height: 520px; background: radial-gradient(circle at 50% 40%, rgba(34,211,238,.05), transparent 60%), var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .node { position: absolute; transform: translate(-50%, -50%); text-align: center; }
+  .node .nbox { width: 118px; padding: 12px 10px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--card); box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .node .nlabel { font-size: 12px; font-weight: 600; margin-top: 5px; }
+  .node .nsub { font-size: 10px; color: var(--text-faint); font-family: "JetBrains Mono", monospace; margin-top: 2px; }
+  .node .nic { width: 30px; height: 30px; margin: 0 auto; border-radius: 8px; display: grid; place-items: center; }
+  .edge { position: absolute; height: 2px; background: linear-gradient(90deg, var(--border-strong), var(--text-faint)); transform-origin: left center; }
+  .edge .arrow { position: absolute; right: -5px; top: -4px; width: 0; height: 0; border-left: 8px solid var(--text-faint); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .legend { position: absolute; left: 16px; bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .legend .pill { background: rgba(10,15,30,.85); }
+
+  /* ---------- states ---------- */
+  .steps { max-width: 420px; margin: 0 auto; }
+  .step { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px; color: var(--text-dim); font-size: 13px; }
+  .step.done { color: var(--success); }
+  .step.active { color: var(--cyan); background: rgba(34,211,238,.05); }
+  .step .s-ic { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 800; background: rgba(100,116,139,.15); }
+  .step.done .s-ic { background: rgba(16,185,129,.15); }
+  .step.active .s-ic { background: rgba(34,211,238,.15); animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .6; } }
+
+  .foot { text-align: center; color: var(--text-faint); font-size: 12px; padding: 24px 0; }
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-strong); font-size: 12px; font-weight: 500; color: var(--text-dim); cursor: pointer; }
+  .chip.active { color: var(--cyan); border-color: rgba(34,211,238,.5); background: rgba(34,211,238,.08); }
+  .search { display: flex; gap: 10px; }
+  .search input { flex: 1; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 9px; padding: 10px 14px; color: var(--text); font: inherit; font-size: 13px; }
+  .search input:focus { outline: none; border-color: var(--cyan); }
+  .search input::placeholder { color: var(--text-faint); }
+  .skeleton { height: 14px; border-radius: 6px; background: linear-gradient(90deg, #151d33, #1b2540, #151d33); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  .hint { font-size: 11px; color: var(--text-faint); border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    </div>
+    MailSleuth&nbsp;AI
+  </div>
+  <div class="nav">
+    <button data-nav="upload" class="active">Upload</button>
+    <button data-nav="investigation">Investigation</button>
+    <button data-nav="evidence">Evidence</button>
+    <button data-nav="report">Report</button>
+    <button data-nav="ioc">IOC Search</button>
+    <button data-nav="graph">Attack Graph</button>
+    <button data-nav="history">History</button>
+    <button data-nav="states">States</button>
+  </div>
+  <div class="top-right">
+    <span>Analyst — Demo</span>
+    <div class="avatar"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ PAGE 1: UPLOAD ============ -->
+  <section class="page active" id="page-upload">
+    <div class="hero">
+      <div class="kicker"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--cyan)"></span> AI Email Forensics Platform</div>
+      <h1>Analyze suspicious emails <span>before they strike</span></h1>
+      <p>Upload a <span class="mono" style="color:var(--text)">.eml</span> file and get a complete, evidence-backed forensic investigation in seconds.</p>
+    </div>
+
+    <div id="dropzone" class="dropzone">
+      <div class="dz-icon" id="dz-upload">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div id="dz-scan" class="scan">
+        <div class="radar"><div class="ring"></div></div>
+      </div>
+      <h3>Drop your .eml file or click to browse</h3>
+      <p>Only .eml supported &nbsp;•&nbsp; Max 25 MB &nbsp;•&nbsp; Requires authentication</p>
+    </div>
+
+    <div class="sample" style="margin-top:16px">
+      <a onclick="startScan()">Try sample email → <span class="mono" style="color:var(--text-dim)">ceo_payment_request.eml</span></a>
+    </div>
+
+    <div class="pipeline">
+      <span class="pill cyan">SPF / DKIM / DMARC</span>
+      <span class="pill blue">URL &amp; Domain Intel</span>
+      <span class="pill" style="color:var(--violet);border-color:rgba(139,92,246,.35)">Threat Intelligence</span>
+      <span class="pill green">AI Investigator</span>
+    </div>
+
+    <div class="grid gc-3 mt" style="max-width:900px;margin-left:auto;margin-right:auto">
+      <div class="card">
+        <div class="card-b" style="display:flex;gap:12px;align-items:center">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(34,211,238,.1);color:var(--cyan);display:grid;place-items:center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </div>
+          <div><div style="font-weight:600;font-size:13px">Forensic-grade analysis</div><div class="faint" style="font-size:12px">Headers, auth, URLs, domains, content</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-b" style="display:flex;gap:12px;align-items:center">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,.1);color:var(--violet);display:grid;place-items:center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 2v4"/><path d="M16 2v4"/></svg>
+          </div>
+          <div><div style="font-weight:600;font-size:13px">Full forensic report</div><div class="faint" style="font-size:12px">Verdict, IOCs, timeline, actions</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-b" style="display:flex;gap:12px;align-items:center">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.1);color:var(--success);display:grid;place-items:center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a2.5 2.5 0 0 1 2.5 2.5c0 1.5-1 2-2.5 3.5-1.5-1.5-2.5-2-2.5-3.5A2.5 2.5 0 0 1 12 8Z"/><path d="M3 5v14"/><path d="M21 5v14"/><path d="M7 5v14"/><path d="M17 5v14"/></svg>
+          </div>
+          <div><div style="font-weight:600;font-size:13px">Evidence-backed AI</div><div class="faint" style="font-size:12px">Every claim cites proof (EV-001…)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2: INVESTIGATION ============ -->
+  <section class="page" id="page-investigation">
+    <div class="verdict-banner">
+      <div>
+        <div class="vb-title">VERDICT — MALICIOUS</div>
+        <div class="vb-sub mono">case: INV-0042 • ceo_payment_request.eml • 2026-09-22 14:03 UTC</div>
+      </div>
+      <div>
+        <span class="pill red"><span class="dot"></span> HIGH RISK</span>
+      </div>
+    </div>
+
+    <div class="grid gc-37">
+      <!-- left column -->
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+          <div class="card-b" style="text-align:center;padding:22px">
+            <div class="label">Threat level</div>
+            <div class="gauge">
+              <svg viewBox="0 0 42 42">
+                <circle class="bg" cx="21" cy="21" r="16" fill="none" stroke-width="4.5"/>
+                <circle class="fg" cx="21" cy="21" r="16" fill="none" stroke-width="4.5" stroke-dasharray="100.5" stroke-dashoffset="8"/>
+              </svg>
+            </div>
+            <div style="font-family:'JetBrains Mono';font-size:34px;font-weight:800;color:var(--danger);margin-top:-92px">94<small class="faint" style="font-size:15px;font-weight:600">/100</small></div>
+            <div style="font-size:12px;color:var(--text-dim);margin-top:4px">Risk score</div>
+            <div class="chip-row" style="justify-content:center;margin-top:14px">
+              <span class="pill red"><span class="dot"></span>BEC</span>
+              <span class="pill red"><span class="dot"></span>Spoofing</span>
+              <span class="pill amber"><span class="dot"></span>Executive Impersonation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>Risk factor breakdown</h3></div>
+          <div class="card-b">
+            <div class="ml-bar"><div class="top"><span>Authentication failure</span><span class="mono faint">+25</span></div><div class="track"><div class="fill" style="width:80%;background:linear-gradient(90deg,var(--danger),var(--warning))"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>URL indicators</span><span class="mono faint">+20</span></div><div class="track"><div class="fill" style="width:66%;background:var(--warning)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>Suspicious domain</span><span class="mono faint">+20</span></div><div class="track"><div class="fill" style="width:66%;background:var(--warning)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>Sender mismatch</span><span class="mono faint">+15</span></div><div class="track"><div class="fill" style="width:50%;background:var(--warning)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>Content indicators</span><span class="mono faint">+10</span></div><div class="track"><div class="fill" style="width:33%;background:var(--info)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>ML prediction</span><span class="mono faint">+4</span></div><div class="track"><div class="fill" style="width:14%;background:var(--info)"></div></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:8px;padding-top:10px;border-top:1px solid var(--border)"><span class="faint">Total</span><span class="mono" style="color:var(--danger);font-weight:700">94</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right column -->
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+          <div class="card-h">
+            <div style="display:flex;gap:8px">
+              <span class="chip active" onclick="switchTab(this,'tab-auth')">Authentication</span>
+              <span class="chip" onclick="switchTab(this,'tab-sender')">Sender</span>
+              <span class="chip" onclick="switchTab(this,'tab-urls')">URLs</span>
+              <span class="chip" onclick="switchTab(this,'tab-content')">Content</span>
+              <span class="chip" onclick="switchTab(this,'tab-attach')">Attachment</span>
+            </div>
+          </div>
+          <div class="card-b" style="min-height:220px">
+            <div id="tab-auth">
+              <div class="auth-row"><div class="name">SPF</div><div class="detail">smtp.mail-zone-1.com → ceo.attacker-example.com</div><span class="check fail">✕</span><span class="pill red" style="margin-left:12px">FAIL</span></div>
+              <div class="auth-row"><div class="name">DKIM</div><div class="detail">Signature invalid — key mismatch</div><span class="check fail">✕</span><span class="pill red" style="margin-left:12px">FAIL</span></div>
+              <div class="auth-row"><div class="name">DMARC</div><div class="detail">p=reject, alignment failed</div><span class="check fail">✕</span><span class="pill red" style="margin-left:12px">FAIL</span></div>
+              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+                <div class="label">Received chain</div>
+                <div class="faint mono" style="font-size:12px;line-height:1.9">
+                  mail.attacker-example.com (203.0.113.50)<br/>&nbsp;&nbsp;↓<br/>relay.amazonaws.com<br/>&nbsp;&nbsp;↓<br/>mail.corp-internal.com → recipient
+                </div>
+              </div>
+            </div>
+            <div id="tab-sender" style="display:none">
+              <div class="auth-row"><div class="name">From</div><div class="detail mono">ceo@microsoft-verify.com</div></div>
+              <div class="auth-row"><div class="name">Reply-To</div><div class="detail mono">attacker@gmail.com</div><span class="pill amber">⚠ mismatch</span></div>
+              <div class="auth-row"><div class="name">Return-Path</div><div class="detail mono">bounce-attacker@mail.ru</div></div>
+              <div class="auth-row"><div class="name">DKIM domain</div><div class="detail mono">attacker-example.com</div></div>
+              <div class="auth-row"><div class="name">SPF domain</div><div class="detail mono">attacker-example.com</div></div>
+              <div style="margin-top:14px;padding:12px;border-radius:9px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);font-size:13px">
+                <span class="faint">Spoofed identity targets brand:</span> <span class="pill amber" style="margin-top:6px">Microsoft — 87% confidence</span>
+              </div>
+            </div>
+            <div id="tab-urls" style="display:none">
+              <div class="faint" style="font-size:12px;margin-bottom:8px">4 URLs detected · 2 suspicious · 1 known shortener</div>
+              <div class="url-row"><span class="check fail">✕</span><div style="flex:1"><div class="mono" style="font-size:13px">https://microsoft-verify.com/secure/login</div><div class="u-hat">Suspicious domain · login path · HTTPS</div></div><span class="pill red">HIGH</span></div>
+              <div class="url-row"><span class="check fail">✕</span><div style="flex:1"><div class="mono" style="font-size:13px">https://bit.ly/3kQpZx1</div><div class="u-hat">URL shortener · redirects 2×</div></div><span class="pill amber">MED</span></div>
+              <div class="url-row"><span class="check pass">✓</span><div style="flex:1"><div class="mono" style="font-size:13px">https://example.com</div><div class="u-hat">Reputable domain · clean</div></div><span class="pill green">LOW</span></div>
+              <div class="url-row"><span class="check none">–</span><div style="flex:1"><div class="mono" style="font-size:13px">https://192.0.2.10/auth</div><div class="u-hat">IP-based URL · uncategorized</div></div><span class="pill amber">MED</span></div>
+            </div>
+            <div id="tab-content" style="display:none">
+              <div class="ck warn"><div class="box">!</div><span>Urgency language: “<b>URGENT</b>”, “act <b>within 1 hour</b>”</span></div>
+              <div class="ck warn"><div class="box">!</div><span>Financial request: “wire transfer to new account”</span></div>
+              <div class="ck warn"><div class="box">!</div><span>Secrecy: “do not share this with anyone”</span></div>
+              <div class="ck warn"><div class="box">!</div><span>Executive impersonation: “CEO Sarah Mitchell”</span></div>
+              <div class="ck ok"><div class="box">✓</div><span>No credential / OTP request detected</span></div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><div class="label">BEC score</div><div class="ml-bar"><div class="top"><span>Business Email Compromise likelihood</span><span class="mono" style="color:var(--danger)">91%</span></div><div class="track"><div class="fill" style="width:91%;background:var(--danger)"></div></div></div></div>
+            </div>
+            <div id="tab-attach" style="display:none">
+              <div class="auth-row"><div class="name">Filename</div><div class="detail mono">invoice_2026.pdf.exe</div><span class="pill red">double ext</span></div>
+              <div class="auth-row"><div class="name">MIME type</div><div class="detail mono">application/x-msdownload</div></div>
+              <div class="auth-row"><div class="name">Size</div><div class="detail mono">1.8 MB</div></div>
+              <div class="auth-row"><div class="name">SHA-256</div><div class="detail mono" style="font-size:11px">9c5b…a41f</div></div>
+              <div style="margin-top:12px;padding:12px;border-radius:9px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);font-size:13px">Executable attachment disguised as invoice — <b>do not execute</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>AI Investigator</h3><span class="pill cyan"><span class="dot"></span> evidence-grounded</span></div>
+          <div class="card-b">
+            <p style="font-size:13.5px;color:var(--text)">This email is <b style="color:var(--danger)">highly likely a Business Email Compromise attack</b>. It impersonates CEO Sarah Mitchell using a spoofed display name and a look-alike domain <span class="mono">microsoft-verify.com</span>, fails SPF/DKIM/DMARC <span class="pill red" style="margin:0 2px;font-size:11px">EV-001</span><span class="pill red" style="margin:0 2px;font-size:11px">EV-002</span>, sets Reply-To to an external attacker address <span class="pill amber" style="margin:0 2px;font-size:11px">EV-003</span>, and requests an urgent wire transfer <span class="pill red" style="margin:0 2px;font-size:11px">EV-005</span>. The attached "invoice" is actually executable payload <span class="pill red" style="margin:0 2px;font-size:11px">EV-006</span>.</p>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button class="btn danger">Block domain</button>
+              <button class="btn">Search mail logs</button>
+              <button class="btn">Investigate affected users</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>ML classification</h3></div>
+          <div class="card-b">
+            <div class="ml-bar"><div class="top"><span>PHISHING</span><span class="mono">0.92</span></div><div class="track"><div class="fill" style="width:92%;background:var(--danger)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>SPOOFING</span><span class="mono">0.87</span></div><div class="track"><div class="fill" style="width:87%;background:var(--danger)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>BEC</span><span class="mono">0.78</span></div><div class="track"><div class="fill" style="width:78%;background:var(--warning)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>MALWARE</span><span class="mono">0.05</span></div><div class="track"><div class="fill" style="width:5%;background:var(--info)"></div></div></div>
+            <div class="ml-bar"><div class="top"><span>BENIGN</span><span class="mono">0.01</span></div><div class="track"><div class="fill" style="width:1%;background:var(--success)"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3: EVIDENCE EXPLORER ============ -->
+  <section class="page" id="page-evidence">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div><h2 style="font-size:20px;font-weight:700">Evidence Explorer</h2><div class="faint" style="font-size:12px">Every finding in case INV-0042, with its source proof.</div></div>
+      <div class="chip-row">
+        <span class="chip active">All</span><span class="chip">Authentication</span><span class="chip">URL</span><span class="chip">Domain</span><span class="chip">Content</span><span class="chip">ML</span>
+      </div>
+    </div>
+    <div class="grid gc-3">
+      <div class="evidence-grid" style="grid-column:span 2">
+        <div class="ev-card"><div class="ev-id">EV-001</div><div><div class="ev-title">SPF authentication failed <span class="pill red" style="margin-left:8px">Authentication</span></div><div class="ev-desc">Authorized IP not found; envelope domain <span class="mono">attacker-example.com</span> had no SPF record for sending host.</div></div></div>
+        <div class="ev-card"><div class="ev-id">EV-002</div><div><div class="ev-title">DKIM signature invalid <span class="pill red" style="margin-left:8px">Authentication</span></div><div class="ev-desc">Signature verification failed — header hash mismatch.</div></div></div>
+        <div class="ev-card"><div class="ev-id">EV-003</div><div><div class="ev-title">Reply-To mismatch <span class="pill amber" style="margin-left:8px">Sender</span></div><div class="ev-desc">From is <span class="mono">ceo@microsoft-verify.com</span>, but Reply-To is <span class="mono">attacker@gmail.com</span>.</div></div></div>
+        <div class="ev-card"><div class="ev-id">EV-004</div><div><div class="ev-title">Look-alike domain, 5 days old <span class="pill amber" style="margin-left:8px">Domain</span></div><div class="ev-desc"><span class="mono">microsoft-verify.com</span> registered 2026-09-17; typosquat of microsoft.com (87% confidence).</div></div></div>
+        <div class="ev-card"><div class="ev-id">EV-005</div><div><div class="ev-title">Urgent financial request <span class="pill red" style="margin-left:8px">Content</span></div><div class="ev-desc">Wire-transfer instruction + “act within 1 hour” urgency + secrecy clause.</div></div></div>
+        <div class="ev-card"><div class="ev-id">EV-006</div><div><div class="ev-title">Executable attachment <span class="pill red" style="margin-left:8px">Attachment</span></div><div class="ev-desc"><span class="mono">invoice_2026.pdf.exe</span> is an executable disguised as a document.</div></div></div>
+      </div>
+      <div class="card" style="align-self:start">
+        <div class="card-h"><h3>Detail — EV-003</h3></div>
+        <div class="card-b">
+          <div class="label">Category</div><div style="margin-bottom:12px">Sender</div>
+          <div class="label">Severity</div><div class="pill amber" style="margin-bottom:12px"><span class="dot"></span>Medium</div>
+          <div class="label">Raw header value</div>
+          <div class="faint mono" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11.5px;margin-bottom:12px;overflow-wrap:break-word">Reply-To: &lt;attacker@gmail.com&gt;</div>
+          <div class="label">Interpreted meaning</div>
+          <div class="muted" style="font-size:13px">Any reply bypasses the spoofed executive address and lands in the attacker's mailbox, facilitating conversation hijacking.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4: FORENSIC REPORT ============ -->
+  <section class="page" id="page-report">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 style="font-size:20px;font-weight:700">Forensic Report</h2>
+      <button class="btn primary">Download report (PDF)</button>
+    </div>
+    <div class="grid gc-3">
+      <div class="card">
+        <div class="card-h"><h3>Executive summary</h3></div>
+        <div class="card-b"><p class="muted" style="font-size:13px">This email is <b style="color:var(--danger)">highly likely a Business Email Compromise (BEC) attack</b> combining executive impersonation and email spoofing to fraudulently request a wire transfer.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Verdict &amp; risk</h3></div>
+        <div class="card-b" style="display:flex;gap:16px;align-items:center">
+          <div style="flex:1;text-align:center;border-right:1px solid var(--border)"><div style="font-size:12px" class="faint">Verdict</div><div style="font-size:22px;font-weight:800;color:var(--danger)">MALICIOUS</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:12px" class="faint">Risk score</div><div class="mono" style="font-size:22px;font-weight:800;color:var(--danger)">94/100</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Attack classification</h3></div>
+        <div class="card-b"><div class="chip-row"><span class="pill red">BEC</span><span class="pill red">Spoofing</span><span class="pill amber">Executive Impersonation</span></div></div>
+      </div>
+    </div>
+
+    <div class="card mt">
+      <div class="card-h"><h3>Indicators of compromise (IOCs)</h3></div>
+      <div class="card-b" style="padding:0">
+        <table class="ioc">
+          <tr><th>Type</th><th>Value</th><th>Reputation</th><th>First seen</th><th>Domain age</th></tr>
+          <tr><td><div class="ioc-type" style="color:var(--cyan)">⬢ Domain</div></td><td class="mono">microsoft-verify.com <span class="copy">⧉</span></td><td><span class="pill red">Suspicious</span></td><td class="faint">2026-09-17</td><td class="faint">5 days</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--info)">◉ IP</div></td><td class="mono">203.0.113.50 <span class="copy">⧉</span></td><td><span class="pill amber">Reported</span></td><td class="faint">2026-09-18</td><td class="faint">—</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--violet)">◎ URL</div></td><td class="mono">https://microsoft-verify.com/secure/login <span class="copy">⧉</span></td><td><span class="pill red">Suspicious</span></td><td class="faint">2026-09-17</td><td class="faint">—</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--warning)">∿ File</div></td><td class="mono">invoice_2026.pdf.exe · 9c5b…a41f <span class="copy">⧉</span></td><td><span class="pill red">Malicious</span></td><td class="faint">2026-09-21</td><td class="faint">—</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--danger)">✉ Email</div></td><td class="mono">attacker@gmail.com <span class="copy">⧉</span></td><td><span class="pill amber">Reported</span></td><td class="faint">2026-09-12</td><td class="faint">—</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid gc-2 mt">
+      <div class="card">
+        <div class="card-h"><h3>Attack timeline</h3></div>
+        <div class="card-b">
+          <div class="tl">
+            <div class="tl-item danger"><div class="t-title">Email received</div><div class="t-time">2026-09-22 14:03:41 UTC</div><div class="t-desc">MTA mail.west-corp.com accepts message</div></div>
+            <div class="tl-item warn"><div class="t-title">Authentication checks</div><div class="t-time">14:03:42</div><div class="t-desc">SPF FAIL · DKIM FAIL · DMARC FAIL (p=reject)</div></div>
+            <div class="tl-item warn"><div class="t-title">Delivery to inbox</div><div class="t-time">14:03:45</div><div class="t-desc">Delivered @finance-desk despite failed auth</div></div>
+            <div class="tl-item warn"><div class="t-title">URL interaction</div><div class="t-time">~14:05 — unconfirmed</div><div class="t-desc">Link <span class="mono">microsoft-verify.com/secure/login</span> flagged</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Recommended actions</h3></div>
+        <div class="card-b" style="padding:18px">
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)"><span class="pill red">1</span><div><b>Block domain</b> — add <span class="mono">microsoft-verify.com</span> to blocklist</div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)"><span class="pill red">2</span><div><b>Search mail logs</b> for other deliveries from 203.0.113.50</div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)"><span class="pill red">3</span><div><b>Investigate recipients</b> — @finance-desk group, alerted users</div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)"><span class="pill red">4</span><div><b>Review account activity</b> for suspicious logins on executive accounts</div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)"><span class="pill amber">5</span><div><b>Retain artifact</b> — preserve original <span class="mono">.eml</span> for forensics</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">Generated by MailSleuth AI · case INV-0042 · 2026-09-22 14:04 UTC</div>
+  </section>
+
+  <!-- ============ PAGE 5: IOC SEARCH ============ -->
+  <section class="page" id="page-ioc">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 style="font-size:20px;font-weight:700">IOC Search</h2>
+      <div class="chip-row"><span class="chip active">All</span><span class="chip">Domains</span><span class="chip">IPs</span><span class="chip">URLs</span><span class="chip">Hashes</span><span class="chip">Emails</span></div>
+    </div>
+    <div class="card">
+      <div class="card-b" style="border-bottom:1px solid var(--border);background:var(--surface)">
+        <div class="search">
+          <input placeholder="Search domain, IP, URL, hash or email…  e.g. microsoft-verify.com" />
+          <button class="btn primary">Search</button>
+        </div>
+      </div>
+      <div style="padding:0">
+        <table class="ioc">
+          <tr><th>Type</th><th>Indicator</th><th>Reputation</th><th>First seen</th><th>Domain age</th><th>Source</th></tr>
+          <tr onclick="openDrawer(this)"><td><div class="ioc-type" style="color:var(--cyan)">⬢</div></td><td class="mono">microsoft-verify.com</td><td><span class="pill red">Suspicious</span></td><td class="faint">2026-09-17</td><td class="faint">5 days</td><td class="faint">Case INV-0042</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--cyan)">⬢</div></td><td class="mono">attacker-example.com</td><td><span class="pill red">Suspicious</span></td><td class="faint">2026-09-10</td><td class="faint">12 days</td><td class="faint">Case INV-0041</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--info)">◉</div></td><td class="mono">203.0.113.50</td><td><span class="pill amber">Reported · ASN AS16509</span></td><td class="faint">2026-09-18</td><td class="faint">—</td><td class="faint">Case INV-0042</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--violet)">◎</div></td><td class="mono">https://bit.ly/3kQpZx1</td><td><span class="pill amber">Shortener</span></td><td class="faint">2026-09-21</td><td class="faint">—</td><td class="faint">Case INV-0040</td></tr>
+          <tr><td><div class="ioc-type" style="color:var(--warning)">∿</div></td><td class="mono">9c5b3f…a41f</td><td><span class="pill red">Malicious (VT 8/60)</span></td><td class="faint">2026-09-21</td><td class="faint">—</td><td class="faint">Case INV-0042</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mt" id="drawer" style="display:none">
+      <div class="card-h"><h3>Intelligence — microsoft-verify.com</h3><button class="btn" style="padding:5px 12px" onclick="document.getElementById('drawer').style.display='none'">Close</button></div>
+      <div class="grid gc-4" style="padding:18px">
+        <div><div class="label">Registrar</div><div class="muted">NameCheap, Inc.</div></div>
+        <div><div class="label">Registered</div><div class="muted mono">2026-09-17</div></div>
+        <div><div class="label">Nameservers</div><div class="muted mono">ns1.donaldserver.net</div></div>
+        <div><div class="label">Hosting</div><div class="muted mono">203.0.113.50 · AS16509</div></div>
+      </div>
+      <div class="card-b" style="border-top:1px solid var(--border)">
+        <div class="label">Threat reports</div>
+        <div class="chip-row"><span class="pill red"><span class="dot"></span>Malware domain — 3 reports</span><span class="pill amber"><span class="dot"></span>Credential phishing — 2 reports</span></div>
+        <div style="margin-top:12px"><div class="label">Related indicators</div><div class="chip-row"><span class="pill blue">203.0.113.50</span><span class="pill cyan">attacker@gmail.com</span><span class="pill blue">9c5b3f…a41f</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 6: ATTACK GRAPH ============ -->
+  <section class="page" id="page-graph">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 style="font-size:20px;font-weight:700">Attack Graph</h2>
+      <div class="chip-row"><button class="btn">Reset view</button></div>
+    </div>
+    <div class="card">
+      <div class="graph-canvas" id="graph">
+        <div class="edge" style="left:50%;top:23%;width:97px"></div>
+        <div class="edge" style="left:50%;top:39%;width:97px"></div>
+        <div class="edge" style="left:50%;top:55%;width:97px"></div>
+        <div class="edge" style="left:50%;top:71%;width:97px"></div>
+        <div class="edge" style="left:50%;top:87%;width:97px"></div>
+        <div class="node" style="left:50%;top:14%;cursor:pointer" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(239,68,68,.15);color:var(--danger)">🔻</div><div class="nlabel" style="color:var(--danger)">Attacker</div><div class="nsub">attacker@gmail.com</div></div></div>
+        <div class="node" style="left:50%;top:30%" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(59,130,246,.15);color:var(--info)">◉</div><div class="nlabel">IP Address</div><div class="nsub">203.0.113.50</div></div></div>
+        <div class="node" style="left:50%;top:46%" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(139,92,246,.15);color:var(--violet)">▣</div><div class="nlabel">Mail Server</div><div class="nsub">mail.attacker-example.com</div></div></div>
+        <div class="node" style="left:50%;top:62%" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(16,185,129,.15);color:var(--success)">◍</div><div class="nlabel">Victim</div><div class="nsub">finance-desk@west-corp.com</div></div></div>
+        <div class="node" style="left:50%;top:78%" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(245,158,11,.15);color:var(--warning)">◎</div><div class="nlabel">Phishing URL</div><div class="nsub">microsoft-verify.com</div></div></div>
+        <div class="node" style="left:50%;top:94%" onclick="selectNode(this)"><div class="nbox"><div class="nic" style="background:rgba(239,68,68,.15);color:var(--danger)">⌂</div><div class="nlabel" style="color:var(--danger)">Fake Login</div><div class="nsub">/secure/login</div></div></div>
+        <div class="legend">
+          <span class="pill red"><span class="dot"></span>adversary</span>
+          <span class="pill blue"><span class="dot"></span>infrastructure</span>
+          <span class="pill green"><span class="dot"></span>victim</span>
+          <span class="pill cyan"><span class="dot"></span>click node</span>
+        </div>
+      </div>
+    </div>
+    <div class="card mt" id="gnode" style="display:none">
+      <div class="card-h"><h3>Inspector — <span class="mono">IP Address</span></h3><button class="btn" style="padding:5px 12px" onclick="document.getElementById('gnode').style.display='none'">Close</button></div>
+      <div class="card-b"><div class="grid gc-4"><div><div class="label">Type</div><div class="muted">IPv4</div></div><div><div class="label">Country</div><div class="muted">US</div></div><div><div class="label">ASN</div><div class="muted mono">AS16509 (Amazon)</div></div><div><div class="label">Reputation</div><div class="muted">Reported — 3 sources</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 7: HISTORY ============ -->
+  <section class="page" id="page-history">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 style="font-size:20px;font-weight:700">Investigation history</h2>
+      <button class="btn primary">+ New analysis</button>
+    </div>
+    <div class="card">
+      <div class="search" style="padding:16px 18px;border-bottom:1px solid var(--border)"><input placeholder="Search by filename, verdict, or IOC…" /></div>
+      <div style="padding:0">
+        <table class="ioc">
+          <tr><th>Filename</th><th>Date</th><th>Risk</th><th>Verdict</th><th>Attack type</th><th></th></tr>
+          <tr><td class="mono">ceo_payment_request.eml</td><td class="faint">2026-09-22 14:03</td><td><span class="pill red"><span class="dot"></span>94 HIGH</span></td><td><span class="pill red">MALICIOUS</span></td><td class="muted">BEC · Spoofing</td><td class="copy">view →</td></tr>
+          <tr><td class="mono">microsoft_login.eml</td><td class="faint">2026-09-20 09:12</td><td><span class="pill amber"><span class="dot"></span>61 MED</span></td><td><span class="pill amber">SUSPICIOUS</span></td><td class="muted">Credential phishing</td><td class="copy">view →</td></tr>
+          <tr><td class="mono">newsletter_deals.eml</td><td class="faint">2026-09-18 18:44</td><td><span class="pill green"><span class="dot"></span>8 LOW</span></td><td><span class="pill green">BENIGN</span></td><td class="muted">—</td><td class="copy">view →</td></tr>
+          <tr><td class="mono">invoice_attachment.eml</td><td class="faint">2026-09-15 11:27</td><td><span class="pill red"><span class="dot"></span>88 HIGH</span></td><td><span class="pill red">MALICIOUS</span></td><td class="muted">Malware delivery</td><td class="copy">view →</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 8: STATES ============ -->
+  <section class="page" id="page-states">
+    <div class="grid gc-2">
+      <div class="card">
+        <div class="card-h"><h3>Analyzing… (loading state)</h3></div>
+        <div class="card-b">
+          <div class="steps" style="margin:0 0 18px">
+            <div class="step done"><div class="s-ic">✓</div>Parsing email structure</div>
+            <div class="step done"><div class="s-ic">✓</div>Extracting headers &amp; Received chain</div>
+            <div class="step active"><div class="s-ic">↻</div>Checking SPF / DKIM / DMARC</div>
+            <div class="step"><div class="s-ic">・</div>Analyzing URLs &amp; domains</div>
+            <div class="step"><div class="s-ic">・</div>ML classification</div>
+            <div class="step"><div class="s-ic">・</div>AI investigator drafting report</div>
+          </div>
+          <div class="skeleton" style="margin-bottom:10px;width:80%"></div>
+          <div class="skeleton" style="margin-bottom:10px;width:60%"></div>
+          <div class="skeleton" style="width:92%"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>File rejected (empty / error state)</h3></div>
+        <div class="card-b" style="text-align:center;padding:34px">
+          <div class="dz-icon" style="background:rgba(239,68,68,.1);color:var(--danger)">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h3 style="margin-bottom:6px">Unsupported file type</h3>
+          <p class="muted" style="font-size:13px">“<span class="mono">meeting.msg</span>” was rejected. Only <span class="mono">.eml</span> files are supported in this version.</p>
+          <button class="btn" style="margin-top:16px">Choose another file</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hint">Click a node in the Attack Graph or a row in IOC Search to see inspector behavior. Switch tabs in the Investigation Authentication panel.</div>
+</div>
+
+<script>
+  document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + b.dataset.nav).classList.add('active');
+    window.scrollTo({ top: 0 });
+  }));
+
+  function startScan() {
+    const dz = document.getElementById('dropzone');
+    dz.classList.add('scanning');
+    document.getElementById('dz-upload').style.display = 'none';
+    setTimeout(() => {
+      document.querySelectorAll('.nav button').forEach(x => x.classList.remove('active'));
+      document.querySelector('[data-nav="investigation"]').classList.add('active');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-investigation').classList.add('active');
+      window.scrollTo({ top: 0 });
+    }, 2000);
+  }
+
+  function switchTab(chip, id) {
+    document.querySelectorAll('#page-investigation .card-h .chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    ['tab-auth','tab-sender','tab-urls','tab-content','tab-attach'].forEach(t => document.getElementById(t).style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  }
+
+  function openDrawer(row) { document.getElementById('drawer').style.display = 'block'; document.getElementById('drawer').scrollIntoView({behavior:'smooth'}); }
+  function selectNode(node) { document.getElementById('gnode').style.display = 'block'; }
+</script>
+</body>
+</html>
