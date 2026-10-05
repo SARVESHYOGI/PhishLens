@@ -1,8 +1,12 @@
-import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { defineConfig } from 'vite'
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,8 +16,8 @@ export default defineConfig({
     tailwindcss()
   ],
   resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
+    alias: {
+      "@": resolve(__dirname, "./src"),
     },
+  },
 })

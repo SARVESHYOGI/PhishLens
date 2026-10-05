@@ -1,0 +1,18 @@
+{
+  "$schema": "https://oxc-project.github.io/oxlint/oxlint.json",
+  "settings": {
+    "react": {
+      "version": "19.0"
+    }
+  },
+  "plugins": ["react", "jsx-a11y"],
+  "rules": {
+    "react/no-unknown-property": "error",
+    "react/self-closing-comp": "warn",
+    "react/no-unused-state": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/no-noninteractive-element-interactions": "warn"
+  },
+  "ignorePatterns": ["node_modules/", "dist/", "build/", "*.config.*", "*.d.ts"]
+}

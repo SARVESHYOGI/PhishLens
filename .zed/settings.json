@@ -1,0 +1,94 @@
+{
+  "assistant": {
+    "default_model": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514"
+    },
+    "version": "2"
+  },
+  "buffer_font_size": 14,
+  "theme": "Catppuccin Mocha",
+  "ui_font_size": 13,
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["typescript", "tailwindcss", "eslint"],
+      "format_on_save": "on",
+      "formatter": "prettier",
+      "tab_size": 2,
+      "indent_width": 2
+    },
+    "TSX": {
+      "language_servers": ["typescript", "tailwindcss", "eslint"],
+      "format_on_save": "on",
+      "formatter": "prettier",
+      "tab_size": 2,
+      "indent_width": 2
+    },
+    "CSS": {
+      "language_servers": ["tailwindcss", "css"],
+      "format_on_save": "on",
+      "formatter": "prettier"
+    },
+    "JSON": {
+      "format_on_save": "on",
+      "formatter": "prettier"
+    }
+  },
+  "lsp": {
+    "typescript": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative",
+            "includePackageJsonAutoImports": "on"
+          }
+        }
+      }
+    },
+    "tailwindcss": {
+      "settings": {
+        "tailwindCSS": {
+          "includeLanguages": {
+            "typescript": "typescript",
+            "typescriptreact": "typescriptreact"
+          },
+          "experimental": {
+            "classRegex": [
+              ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+              ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+            ]
+          }
+        }
+      }
+    }
+  },
+  "formatter": {
+    "prettier": {
+      "printWidth": 100,
+      "tabWidth": 2,
+      "useTabs": false,
+      "semi": true,
+      "singleQuote": true,
+      "trailingComma": "es5",
+      "bracketSpacing": true,
+      "arrowParens": "always"
+    }
+  },
+  "project_panel": {
+    "dock": "left",
+    "auto_reveal": true,
+    "auto_focus": false
+  },
+  "terminal": {
+    "shell": "powershell",
+    "working_directory": "current_project_directory"
+  },
+  "vim_mode": false,
+  "auto_install_extensions": {
+    "typescript-language-server": true,
+    "tailwindcss-language-server": true,
+    "eslint": true,
+    "prettier": true,
+    "oxlint": true
+  }
+}
