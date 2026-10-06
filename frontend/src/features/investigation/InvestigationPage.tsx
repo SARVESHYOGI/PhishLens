@@ -1,19 +1,7 @@
 import { SAMPLE_INVESTIGATION } from '@/constants/sampleData';
+import { severityColors, verdictColors } from '@/constants/colors';
 import { Download, AlertTriangle, CheckCircle2, XCircle, Clock, FileText } from 'lucide-react';
 import { useState } from 'react';
-
-const severityColors = {
-  low: 'bg-[#10B981]/20 text-[#10B981]',
-  medium: 'bg-[#F59E0B]/20 text-[#F59E0B]',
-  high: 'bg-[#EF4444]/20 text-[#EF4444]',
-  critical: 'bg-[#EF4444]/30 text-[#EF4444]',
-};
-
-const verdictColors = {
-  malicious: 'bg-[#EF4444]/20 text-[#EF4444] border-[#EF4444]/30',
-  benign: 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30',
-  suspicious: 'bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30',
-};
 
 function Gauge({ score }: { score: number }) {
   const circumference = 2 * Math.PI * 42;

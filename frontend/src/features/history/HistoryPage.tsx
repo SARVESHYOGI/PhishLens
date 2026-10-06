@@ -1,4 +1,5 @@
 import { SAMPLE_INVESTIGATION } from '@/constants/sampleData';
+import { verdictColors } from '@/constants/colors';
 import { Search, Download, Eye, Trash2, FileText } from 'lucide-react';
 
 const mockHistory = [
@@ -6,12 +7,6 @@ const mockHistory = [
   { ...SAMPLE_INVESTIGATION, id: 'EV-2024-002', filename: 'invoice_update.eml', riskScore: 78, verdict: 'malicious' as const, uploadedAt: '2024-01-14T14:32:10Z', attackTypes: ['Phishing'] },
   { ...SAMPLE_INVESTIGATION, id: 'EV-2024-003', filename: 'meeting_notes.eml', riskScore: 12, verdict: 'benign' as const, uploadedAt: '2024-01-13T08:15:22Z', attackTypes: [] },
 ];
-
-const verdictColors = {
-  malicious: 'bg-[#EF4444]/20 text-[#EF4444]',
-  benign: 'bg-[#10B981]/20 text-[#10B981]',
-  suspicious: 'bg-[#F59E0B]/20 text-[#F59E0B]',
-};
 
 export function HistoryPage() {
   return (
