@@ -18,9 +18,9 @@ const typeIcons = {
 };
 
 const reputationColors = {
-  malicious: 'bg-[#EF4444]/20 text-[#EF4444]',
-  suspicious: 'bg-[#F59E0B]/20 text-[#F59E0B]',
-  benign: 'bg-[#10B981]/20 text-[#10B981]',
+  malicious: 'bg-destructive/20 text-destructive',
+  suspicious: 'bg-warning/20 text-warning',
+  benign: 'bg-success/20 text-success',
 };
 
 export function IocPage() {
@@ -35,48 +35,48 @@ export function IocPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#F1F5F9]">IOC Search / Threat Intelligence</h1>
+      <h1 className="text-2xl font-bold text-foreground">IOC Search / Threat Intelligence</h1>
 
       <div className="relative max-w-xl">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search domain, IP, hash"
-          className="w-full rounded-lg border border-[#1E293B] bg-[#0F172A] pl-10 pr-4 py-2.5 text-sm text-[#F1F5F9] placeholder-[#94A3B8] focus:outline-none focus:border-[#22D3EE] focus:ring-1 focus:ring-[#22D3EE]/30"
+          className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Results Table */}
-        <div className="lg:col-span-2 rounded-2xl border border-[#1E293B] bg-[#0F172A] overflow-hidden">
+        <div className="lg:col-span-2 rounded-2xl border border-border bg-card overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#1E293B]">
-                <th className="text-left px-4 py-3 text-xs font-medium text-[#94A3B8] uppercase tracking-wider">Type</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-[#94A3B8] uppercase tracking-wider">Value</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-[#94A3B8] uppercase tracking-wider">Reputation</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-[#94A3B8] uppercase tracking-wider">First Seen</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-[#94A3B8] uppercase tracking-wider">Source</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Value</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Reputation</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">First Seen</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Source</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E293B]">
+            <tbody className="divide-y divide-border">
               {filtered.map((ioc) => (
                 <tr
                   key={ioc.value}
                   onClick={() => setSelectedIoc(ioc.value)}
-                  className="hover:bg-[#111827] cursor-pointer transition-colors"
+                  className="hover:bg-surface-hover cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-3 text-sm">{typeIcons[ioc.type as keyof typeof typeIcons]}</td>
-                  <td className="px-4 py-3 text-sm font-mono text-[#F1F5F9]">{ioc.value}</td>
+                  <td className="px-4 py-3 text-sm font-mono text-foreground">{ioc.value}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${reputationColors[ioc.reputation as keyof typeof reputationColors]}`}>
                       {ioc.reputation}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-[#94A3B8]">{ioc.firstSeen}</td>
-                  <td className="px-4 py-3 text-xs text-[#94A3B8]">{ioc.source}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{ioc.firstSeen}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{ioc.source}</td>
                 </tr>
               ))}
             </tbody>
@@ -84,38 +84,38 @@ export function IocPage() {
         </div>
 
         {/* Detail Drawer */}
-        <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6 h-fit">
+        <div className="rounded-2xl border border-border bg-card p-6 h-fit">
           {selected ? (
             <div className="space-y-4">
-              <h2 className="text-sm font-semibold text-[#F1F5F9]">IOC Details</h2>
-              <div className="rounded-xl bg-[#1E2435] p-4">
-                <div className="text-xs text-[#94A3B8] mb-1">Value</div>
-                <div className="text-sm font-mono text-[#F1F5F9] break-all">{selected.value}</div>
+              <h2 className="text-sm font-semibold text-foreground">IOC Details</h2>
+              <div className="rounded-xl bg-secondary p-4">
+                <div className="text-xs text-muted-foreground mb-1">Value</div>
+                <div className="text-sm font-mono text-foreground break-all">{selected.value}</div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-[#1E2435] p-3">
-                  <div className="text-xs text-[#94A3B8]">Reputation</div>
-                  <div className="text-sm font-medium text-[#F1F5F9] capitalize">{selected.reputation}</div>
+                <div className="rounded-xl bg-secondary p-3">
+                  <div className="text-xs text-muted-foreground">Reputation</div>
+                  <div className="text-sm font-medium text-foreground capitalize">{selected.reputation}</div>
                 </div>
-                <div className="rounded-xl bg-[#1E2435] p-3">
-                  <div className="text-xs text-[#94A3B8]">First Seen</div>
-                  <div className="text-sm font-medium text-[#F1F5F9]">{selected.firstSeen}</div>
+                <div className="rounded-xl bg-secondary p-3">
+                  <div className="text-xs text-muted-foreground">First Seen</div>
+                  <div className="text-sm font-medium text-foreground">{selected.firstSeen}</div>
                 </div>
-                <div className="rounded-xl bg-[#1E2435] p-3">
-                  <div className="text-xs text-[#94A3B8]">Domain Age</div>
-                  <div className="text-sm font-medium text-[#F1F5F9]">{selected.age}</div>
+                <div className="rounded-xl bg-secondary p-3">
+                  <div className="text-xs text-muted-foreground">Domain Age</div>
+                  <div className="text-sm font-medium text-foreground">{selected.age}</div>
                 </div>
-                <div className="rounded-xl bg-[#1E2435] p-3">
-                  <div className="text-xs text-[#94A3B8]">Source</div>
-                  <div className="text-sm font-medium text-[#F1F5F9]">{selected.source}</div>
+                <div className="rounded-xl bg-secondary p-3">
+                  <div className="text-xs text-muted-foreground">Source</div>
+                  <div className="text-sm font-medium text-foreground">{selected.source}</div>
                 </div>
               </div>
-              <button className="w-full rounded-lg border border-[#1E293B] bg-[#1E2435] px-3 py-2 text-sm text-[#94A3B8] hover:text-[#F1F5F9] hover:border-[#22D3EE]/30 transition-colors flex items-center justify-center gap-2">
+              <button className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors flex items-center justify-center gap-2">
                 <Copy className="h-3.5 w-3.5" /> Copy IOC
               </button>
             </div>
           ) : (
-            <div className="text-center py-12 text-[#94A3B8]">
+            <div className="text-center py-12 text-muted-foreground">
               <Shield className="h-10 w-10 mx-auto mb-3 opacity-30" />
               <p className="text-sm">Select an IOC to view details</p>
             </div>

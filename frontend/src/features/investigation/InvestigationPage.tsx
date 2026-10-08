@@ -6,12 +6,12 @@ import { useState } from 'react';
 function Gauge({ score }: { score: number }) {
   const circumference = 2 * Math.PI * 42;
   const offset = circumference - (score / 100) * circumference;
-  const color = score >= 80 ? '#EF4444' : score >= 50 ? '#F59E0B' : '#10B981';
+  const color = score >= 80 ? 'var(--destructive)' : score >= 50 ? 'var(--warning)' : 'var(--success)';
 
   return (
     <div className="relative w-40 h-40">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="42" stroke="#1E293B" strokeWidth="6" fill="none" />
+        <circle cx="50" cy="50" r="42" stroke="var(--border)" strokeWidth="6" fill="none" />
         <circle
           cx="50"
           cy="50"
@@ -26,8 +26,8 @@ function Gauge({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-[#F1F5F9]">{score}</span>
-        <span className="text-xs text-[#94A3B8]">/100</span>
+        <span className="text-3xl font-bold text-foreground">{score}</span>
+        <span className="text-xs text-muted-foreground">/100</span>
       </div>
     </div>
   );
@@ -38,12 +38,12 @@ export function InvestigationPage() {
   const inv = SAMPLE_INVESTIGATION;
 
   const riskFactors = [
-    { name: 'Authentication', score: 25, color: '#EF4444' },
-    { name: 'URL', score: 20, color: '#EF4444' },
-    { name: 'Domain', score: 20, color: '#F59E0B' },
-    { name: 'Sender', score: 15, color: '#F59E0B' },
-    { name: 'Content', score: 10, color: '#F59E0B' },
-    { name: 'ML', score: 4, color: '#10B981' },
+    { name: 'Authentication', score: 25, color: 'var(--destructive)' },
+    { name: 'URL', score: 20, color: 'var(--destructive)' },
+    { name: 'Domain', score: 20, color: 'var(--warning)' },
+    { name: 'Sender', score: 15, color: 'var(--warning)' },
+    { name: 'Content', score: 10, color: 'var(--warning)' },
+    { name: 'ML', score: 4, color: 'var(--success)' },
   ];
 
   const tabs = [
@@ -59,19 +59,19 @@ export function InvestigationPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <FileText className="h-5 w-5 text-[#94A3B8]" />
-          <span className="text-[#94A3B8] text-sm">{inv.filename}</span>
+          <FileText className="h-5 w-5 text-muted-foreground" />
+          <span className="text-muted-foreground text-sm">{inv.filename}</span>
           <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${verdictColors[inv.verdict]}`}>
             {inv.verdict === 'malicious' ? <AlertTriangle className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />}
             {inv.verdict.toUpperCase()}
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[#94A3B8] text-sm flex items-center gap-1.5">
+          <span className="text-muted-foreground text-sm flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" />
             {new Date(inv.uploadedAt).toLocaleString()}
           </span>
-          <button className="inline-flex items-center gap-1.5 rounded-lg border border-[#1E293B] bg-[#0F172A] px-3 py-1.5 text-sm text-[#94A3B8] hover:text-[#F1F5F9] hover:border-[#22D3EE]/30 transition-colors">
+          <button className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors">
             <Download className="h-3.5 w-3.5" />
             Download Report
           </button>
@@ -82,15 +82,15 @@ export function InvestigationPage() {
         {/* Left Column - Threat Level */}
         <div className="lg:col-span-4 space-y-6">
           {/* Threat Hero Card */}
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-6">
               <Gauge score={inv.riskScore} />
               <div>
-                <div className="text-xs font-semibold text-[#EF4444] uppercase tracking-wider mb-1">HIGH RISK</div>
-                <div className="text-[#F1F5F9] font-medium">Threat Level</div>
+                <div className="text-xs font-semibold text-destructive uppercase tracking-wider mb-1">HIGH RISK</div>
+                <div className="text-foreground font-medium">Threat Level</div>
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {inv.attackTypes.map((type) => (
-                    <span key={type} className="inline-flex items-center rounded-md bg-[#1E2435] px-2 py-0.5 text-xs text-[#CBD5E1]">
+                    <span key={type} className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
                       {type}
                     </span>
                   ))}
@@ -100,19 +100,19 @@ export function InvestigationPage() {
           </div>
 
           {/* Risk Factor Breakdown */}
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6">
-            <h3 className="text-sm font-semibold text-[#F1F5F9] mb-4">Risk Factors</h3>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Risk Factors</h3>
             <div className="space-y-3">
               {riskFactors.map((factor) => (
                 <div key={factor.name} className="flex items-center gap-3">
-                  <span className="text-xs text-[#94A3B8] w-20">{factor.name}</span>
-                  <div className="flex-1 h-2 rounded-full bg-[#1E293B] overflow-hidden">
+                  <span className="text-xs text-muted-foreground w-20">{factor.name}</span>
+                  <div className="flex-1 h-2 rounded-full bg-border overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{ width: `${factor.score}%`, backgroundColor: factor.color }}
                     />
                   </div>
-                  <span className="text-xs font-medium text-[#F1F5F9] w-8 text-right">+{factor.score}</span>
+                  <span className="text-xs font-medium text-foreground w-8 text-right">+{factor.score}</span>
                 </div>
               ))}
             </div>
@@ -122,15 +122,15 @@ export function InvestigationPage() {
         {/* Right Column - Evidence Panels */}
         <div className="lg:col-span-8">
           {/* Tabs */}
-          <div className="flex gap-1 border-b border-[#1E293B] mb-6 overflow-x-auto">
+          <div className="flex gap-1 border-b border-border mb-6 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-[#22D3EE] text-[#22D3EE]'
-                    : 'border-transparent text-[#94A3B8] hover:text-[#F1F5F9]'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.label}
@@ -139,7 +139,7 @@ export function InvestigationPage() {
           </div>
 
           {/* Tab Content */}
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6">
+          <div className="rounded-2xl border border-border bg-card p-6">
             {activeTab === 'authentication' && (
               <div className="space-y-4">
                 {(['spf', 'dkim', 'dmarc'] as const).map((auth) => {
@@ -147,13 +147,13 @@ export function InvestigationPage() {
                   const isPass = result.result === 'PASS';
                   const isNone = result.result === 'NONE';
                   return (
-                    <div key={auth} className="flex items-center justify-between p-4 rounded-xl bg-[#1E2435]">
+                    <div key={auth} className="flex items-center justify-between p-4 rounded-xl bg-secondary">
                       <div>
-                        <div className="text-sm font-medium text-[#F1F5F9] capitalize">{auth}</div>
-                        <div className="text-xs text-[#94A3B8] mt-0.5">Domain: {'domain' in result ? result.domain || '—' : '—'}</div>
+                        <div className="text-sm font-medium text-foreground capitalize">{auth}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">Domain: {'domain' in result ? result.domain || '—' : '—'}</div>
                       </div>
                       <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                        isPass ? 'bg-[#10B981]/20 text-[#10B981]' : isNone ? 'bg-[#94A3B8]/20 text-[#94A3B8]' : 'bg-[#EF4444]/20 text-[#EF4444]'
+                        isPass ? 'bg-success/20 text-success' : isNone ? 'bg-muted-foreground/20 text-muted-foreground' : 'bg-destructive/20 text-destructive'
                       }`}>
                         {isPass ? <CheckCircle2 className="h-3 w-3" /> : isNone ? <Clock className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                         {result.result}
@@ -167,23 +167,23 @@ export function InvestigationPage() {
             {activeTab === 'sender' && (
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-[#1E2435]">
-                    <div className="text-xs text-[#94A3B8] mb-1">From</div>
-                    <div className="text-sm font-medium text-[#F1F5F9] mono">{inv.sender.from}</div>
+                  <div className="p-4 rounded-xl bg-secondary">
+                    <div className="text-xs text-muted-foreground mb-1">From</div>
+                    <div className="text-sm font-medium text-foreground mono">{inv.sender.from}</div>
                   </div>
-                  <div className="p-4 rounded-xl bg-[#1E2435]">
-                    <div className="text-xs text-[#94A3B8] mb-1">Reply-To</div>
-                    <div className="text-sm font-medium text-[#F1F5F9] mono">{inv.sender.replyTo}</div>
+                  <div className="p-4 rounded-xl bg-secondary">
+                    <div className="text-xs text-muted-foreground mb-1">Reply-To</div>
+                    <div className="text-sm font-medium text-foreground mono">{inv.sender.replyTo}</div>
                   </div>
-                  <div className="p-4 rounded-xl bg-[#1E2435]">
-                    <div className="text-xs text-[#94A3B8] mb-1">Return-Path</div>
-                    <div className="text-sm font-medium text-[#F1F5F9] mono">{inv.sender.returnPath}</div>
+                  <div className="p-4 rounded-xl bg-secondary">
+                    <div className="text-xs text-muted-foreground mb-1">Return-Path</div>
+                    <div className="text-sm font-medium text-foreground mono">{inv.sender.returnPath}</div>
                   </div>
                 </div>
                 {inv.sender.mismatch && (
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/20">
-                    <AlertTriangle className="h-4 w-4 text-[#EF4444]" />
-                    <span className="text-sm text-[#EF4444]">Reply-To mismatch detected</span>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
+                    <span className="text-sm text-destructive">Reply-To mismatch detected</span>
                   </div>
                 )}
               </div>
@@ -192,20 +192,20 @@ export function InvestigationPage() {
             {activeTab === 'urls' && (
               <div className="space-y-3">
                 {inv.urls.map((url) => (
-                  <div key={url.url} className="p-4 rounded-xl bg-[#1E2435]">
+                  <div key={url.url} className="p-4 rounded-xl bg-secondary">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-[#F1F5F9] mono">{url.url}</span>
+                      <span className="text-sm font-medium text-foreground mono">{url.url}</span>
                       <div className="flex gap-1.5">
-                        {url.isShortener && <span className="rounded bg-[#F59E0B]/20 px-2 py-0.5 text-xs text-[#F59E0B]">Shortener</span>}
-                        {url.isHTTPS && <span className="rounded bg-[#10B981]/20 px-2 py-0.5 text-xs text-[#10B981]">HTTPS</span>}
-                        {url.hasPunycode && <span className="rounded bg-[#EF4444]/20 px-2 py-0.5 text-xs text-[#EF4444]">Punycode</span>}
-                        {url.isIPBased && <span className="rounded bg-[#EF4444]/20 px-2 py-0.5 text-xs text-[#EF4444]">IP-based</span>}
+                        {url.isShortener && <span className="rounded bg-warning/20 px-2 py-0.5 text-xs text-warning">Shortener</span>}
+                        {url.isHTTPS && <span className="rounded bg-success/20 px-2 py-0.5 text-xs text-success">HTTPS</span>}
+                        {url.hasPunycode && <span className="rounded bg-destructive/20 px-2 py-0.5 text-xs text-destructive">Punycode</span>}
+                        {url.isIPBased && <span className="rounded bg-destructive/20 px-2 py-0.5 text-xs text-destructive">IP-based</span>}
                       </div>
                     </div>
-                    <div className="text-xs text-[#94A3B8]">Domain: {url.domain}</div>
+                    <div className="text-xs text-muted-foreground">Domain: {url.domain}</div>
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       {url.riskIndicators.map((indicator) => (
-                        <span key={indicator} className="rounded bg-[#EF4444]/10 px-2 py-0.5 text-xs text-[#EF4444]">{indicator}</span>
+                        <span key={indicator} className="rounded bg-destructive/10 px-2 py-0.5 text-xs text-destructive">{indicator}</span>
                       ))}
                     </div>
                   </div>
@@ -221,20 +221,20 @@ export function InvestigationPage() {
                   { indicator: 'Credential request', found: true },
                   { indicator: 'Secrecy pressure', found: false },
                 ].map((item) => (
-                  <div key={item.indicator} className="flex items-center gap-3 p-3 rounded-xl bg-[#1E2435]">
+                  <div key={item.indicator} className="flex items-center gap-3 p-3 rounded-xl bg-secondary">
                     {item.found ? (
-                      <CheckCircle2 className="h-4 w-4 text-[#EF4444]" />
+                      <CheckCircle2 className="h-4 w-4 text-destructive" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-[#1E293B]" />
+                      <XCircle className="h-4 w-4 text-border" />
                     )}
-                    <span className={`text-sm ${item.found ? 'text-[#F1F5F9]' : 'text-[#94A3B8]'}`}>{item.indicator}</span>
+                    <span className={`text-sm ${item.found ? 'text-foreground' : 'text-muted-foreground'}`}>{item.indicator}</span>
                   </div>
                 ))}
               </div>
             )}
 
             {activeTab === 'attachment' && (
-              <div className="text-center py-8 text-[#94A3B8]">
+              <div className="text-center py-8 text-muted-foreground">
                 <FileText className="h-10 w-10 mx-auto mb-3 opacity-30" />
                 <p>No attachments found in this email.</p>
               </div>
@@ -246,18 +246,18 @@ export function InvestigationPage() {
       {/* Bottom Section - ML + AI Investigator */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ML Probabilities */}
-        <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6">
-          <h3 className="text-sm font-semibold text-[#F1F5F9] mb-4">ML Classification</h3>
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h3 className="text-sm font-semibold text-foreground mb-4">ML Classification</h3>
           <div className="space-y-3">
             {Object.entries(inv.ml).map(([label, prob]) => {
-              const color = prob > 70 ? '#EF4444' : prob > 30 ? '#F59E0B' : '#10B981';
+              const color = prob > 70 ? 'var(--destructive)' : prob > 30 ? 'var(--warning)' : 'var(--success)';
               return (
                 <div key={label} className="flex items-center gap-3">
-                  <span className="text-xs text-[#94A3B8] w-24 capitalize">{label}</span>
-                  <div className="flex-1 h-2 rounded-full bg-[#1E293B] overflow-hidden">
+                  <span className="text-xs text-muted-foreground w-24 capitalize">{label}</span>
+                  <div className="flex-1 h-2 rounded-full bg-border overflow-hidden">
                     <div className="h-full rounded-full transition-all duration-700" style={{ width: `${prob}%`, backgroundColor: color }} />
                   </div>
-                  <span className="text-xs font-medium text-[#F1F5F9] w-10 text-right">{prob}%</span>
+                  <span className="text-xs font-medium text-foreground w-10 text-right">{prob}%</span>
                 </div>
               );
             })}
@@ -265,9 +265,9 @@ export function InvestigationPage() {
         </div>
 
         {/* AI Investigator */}
-        <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6">
-          <h3 className="text-sm font-semibold text-[#F1F5F9] mb-4">AI Investigator</h3>
-          <p className="text-sm text-[#CBD5E1] leading-relaxed mb-4">{inv.summary}</p>
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h3 className="text-sm font-semibold text-foreground mb-4">AI Investigator</h3>
+          <p className="text-sm text-secondary-foreground leading-relaxed mb-4">{inv.summary}</p>
           <div className="flex flex-wrap gap-1.5">
             {inv.evidence.slice(0, 3).map((ev) => (
               <span key={ev.id} className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${severityColors[ev.severity]}`}>

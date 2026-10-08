@@ -3,7 +3,7 @@ import { Navbar } from './Navbar';
 
 export function Layout() {
   return (
-    <div className="min-h-screen bg-[#0A0F1E]">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <main className="mx-auto max-w-[1440px] px-6 py-8">
         <Outlet />
