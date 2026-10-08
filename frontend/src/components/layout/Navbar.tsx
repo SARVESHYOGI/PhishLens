@@ -1,13 +1,12 @@
 import { Shield, Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
 
   const navLinks = [
-    { to: '/', label: 'Dashboard' },
+    { to: '/', label: 'Dashboard', end: true },
     { to: '/investigation', label: 'Investigation' },
     { to: '/evidence', label: 'Evidence' },
     { to: '/report', label: 'Report' },
@@ -30,17 +29,20 @@ export function Navbar() {
 
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.to}
               to={link.to}
-              className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                location.pathname === link.to
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-              }`}
+              end={link.end}
+              className={({ isActive }) =>
+                `rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                  isActive
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
 
@@ -55,16 +57,19 @@ export function Navbar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl px-6 py-4 space-y-1">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.to}
               to={link.to}
+              end={link.end}
               onClick={() => setMobileOpen(false)}
-              className={`block rounded-md px-3 py-2 text-sm font-medium ${
-                location.pathname === link.to ? 'text-primary bg-primary/10' : 'text-muted-foreground'
-              }`}
+              className={({ isActive }) =>
+                `block rounded-md px-3 py-2 text-sm font-medium ${
+                  isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground'
+                }`
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
         </div>
       )}
