@@ -4,81 +4,127 @@ import { Search, Download, Eye, Trash2, FileText } from 'lucide-react';
 
 const mockHistory = [
   { ...SAMPLE_INVESTIGATION, id: 'EV-2024-001' },
-  { ...SAMPLE_INVESTIGATION, id: 'EV-2024-002', filename: 'invoice_update.eml', riskScore: 78, verdict: 'malicious' as const, uploadedAt: '2024-01-14T14:32:10Z', attackTypes: ['Phishing'] },
-  { ...SAMPLE_INVESTIGATION, id: 'EV-2024-003', filename: 'meeting_notes.eml', riskScore: 12, verdict: 'benign' as const, uploadedAt: '2024-01-13T08:15:22Z', attackTypes: [] },
+  {
+    ...SAMPLE_INVESTIGATION,
+    id: 'EV-2024-002',
+    filename: 'invoice_update.eml',
+    riskScore: 78,
+    verdict: 'malicious' as const,
+    uploadedAt: '2024-01-14T14:32:10Z',
+    attackTypes: ['Phishing'],
+  },
+  {
+    ...SAMPLE_INVESTIGATION,
+    id: 'EV-2024-003',
+    filename: 'meeting_notes.eml',
+    riskScore: 12,
+    verdict: 'benign' as const,
+    uploadedAt: '2024-01-13T08:15:22Z',
+    attackTypes: [],
+  },
 ];
 
 export function HistoryPage() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-foreground">Investigation History</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-foreground text-2xl font-bold">Investigation History</h1>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search investigations..."
-            className="rounded-lg border border-border bg-card pl-10 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+            className="border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/30 rounded-lg border py-2 pr-4 pl-10 text-sm focus:ring-1 focus:outline-none"
           />
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <div className="border-border bg-card overflow-hidden rounded-2xl border">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border">
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">File</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Risk</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Verdict</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Attack Type</th>
-              <th className="text-right px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Actions</th>
+            <tr className="border-border border-b">
+              <th className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                File
+              </th>
+              <th className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                Date
+              </th>
+              <th className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                Risk
+              </th>
+              <th className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                Verdict
+              </th>
+              <th className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                Attack Type
+              </th>
+              <th className="text-muted-foreground px-6 py-3 text-right text-xs font-medium tracking-wider uppercase">
+                Actions
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-border divide-y">
             {mockHistory.map((item) => (
               <tr key={item.id} className="hover:bg-surface-hover">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium text-foreground mono">{item.filename}</span>
+                    <FileText className="text-muted-foreground h-4 w-4" />
+                    <span className="text-foreground font-mono text-sm font-medium">
+                      {item.filename}
+                    </span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">
+                <td className="text-muted-foreground px-6 py-4 text-sm">
                   {new Date(item.uploadedAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    <div className="text-sm font-bold text-foreground">{item.riskScore}</div>
-                    <div className="w-12 h-2 rounded-full bg-border overflow-hidden">
+                    <div className="text-foreground text-sm font-bold">{item.riskScore}</div>
+                    <div className="bg-border h-2 w-12 overflow-hidden rounded-full">
                       <div
                         className="h-full rounded-full"
                         style={{
                           width: `${item.riskScore}%`,
-                          backgroundColor: item.riskScore >= 80 ? 'var(--destructive)' : item.riskScore >= 50 ? 'var(--warning)' : 'var(--success)',
+                          backgroundColor:
+                            item.riskScore >= 80
+                              ? 'var(--destructive)'
+                              : item.riskScore >= 50
+                                ? 'var(--warning)'
+                                : 'var(--success)',
                         }}
                       />
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${verdictColors[item.verdict]}`}>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${verdictColors[item.verdict]}`}
+                  >
                     {item.verdict === 'malicious' ? '⚠' : item.verdict === 'benign' ? '✓' : '•'}
                     {item.verdict.toUpperCase()}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">
+                <td className="text-muted-foreground px-6 py-4 text-sm">
                   {item.attackTypes.length > 0 ? item.attackTypes.join(', ') : '—'}
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <button className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                    <button
+                      aria-label={`View ${item.filename}`}
+                      className="text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg p-1.5 transition-colors"
+                    >
                       <Eye className="h-4 w-4" />
                     </button>
-                    <button className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                    <button
+                      aria-label={`Download ${item.filename}`}
+                      className="text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg p-1.5 transition-colors"
+                    >
                       <Download className="h-4 w-4" />
                     </button>
-                    <button className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                    <button
+                      aria-label={`Delete ${item.filename}`}
+                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg p-1.5 transition-colors"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>

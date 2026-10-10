@@ -1,8 +1,16 @@
 export type Severity = 'low' | 'medium' | 'high' | 'critical';
 export type Verdict = 'malicious' | 'benign' | 'suspicious';
-export type AttackType = 'BEC' | 'Spoofing' | 'Phishing' | 'Impersonation' | 'Malware' | 'Credential Harvesting' | 'Executive Impersonation';
+export type AttackType =
+  | 'BEC'
+  | 'Spoofing'
+  | 'Phishing'
+  | 'Impersonation'
+  | 'Malware'
+  | 'Credential Harvesting'
+  | 'Executive Impersonation';
 export type IOCType = 'domain' | 'ip' | 'url' | 'hash' | 'email';
-export type EvidenceCategory = 'authentication' | 'sender' | 'url' | 'domain' | 'content' | 'attachment' | 'ml';
+export type EvidenceCategory =
+  'authentication' | 'sender' | 'url' | 'domain' | 'content' | 'attachment' | 'ml';
 
 export interface Evidence {
   id: string;

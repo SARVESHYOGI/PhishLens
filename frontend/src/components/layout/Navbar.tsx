@@ -6,7 +6,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { to: '/', label: 'Dashboard', end: true },
+    { to: '/', label: 'Upload', end: true },
     { to: '/investigation', label: 'Investigation' },
     { to: '/evidence', label: 'Evidence' },
     { to: '/report', label: 'Report' },
@@ -15,19 +15,21 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 h-16 border-b border-border bg-background/90 backdrop-blur-md">
+    <header className="border-border bg-background/90 sticky top-0 z-50 h-16 border-b backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-dark shadow-glow">
-            <Shield className="h-5 w-5 text-background" />
+        <Link to="/" className="group flex items-center gap-2.5">
+          <div className="from-primary to-primary-dark shadow-glow flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br">
+            <Shield className="text-background h-5 w-5" />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-[15px] font-bold tracking-tight text-foreground">MailSleuth</span>
-            <span className="text-[10px] font-medium tracking-widest text-primary uppercase">AI</span>
+            <span className="text-foreground text-[15px] font-bold tracking-tight">MailSleuth</span>
+            <span className="text-primary text-[10px] font-medium tracking-widest uppercase">
+              AI
+            </span>
           </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -48,14 +50,16 @@ export function Navbar() {
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-secondary"
+          aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={mobileOpen}
+          className="text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg p-2 md:hidden"
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl px-6 py-4 space-y-1">
+        <div className="border-border bg-background/95 space-y-1 border-t px-6 py-4 backdrop-blur-xl md:hidden">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}

@@ -46,9 +46,11 @@ export const SAMPLE_INVESTIGATION: InvestigationResult = {
       severity: 'critical',
       title: 'SPF Authentication Failed',
       finding: 'SPF record check failed for domain company.com',
-      source: 'Received-SPF: fail (google.com: domain of ceo@company-secure.com does not designate 198.51.100.42 as permitted sender)',
+      source:
+        'Received-SPF: fail (google.com: domain of ceo@company-secure.com does not designate 198.51.100.42 as permitted sender)',
       rawValue: '198.51.100.42',
-      interpretation: 'The sending IP is not authorized by the claimed domain\'s SPF policy — a strong indicator of spoofing.',
+      interpretation:
+        "The sending IP is not authorized by the claimed domain's SPF policy — a strong indicator of spoofing.",
     },
     {
       id: 'EV-002',
@@ -58,7 +60,8 @@ export const SAMPLE_INVESTIGATION: InvestigationResult = {
       finding: 'Reply-To domain differs from From domain',
       source: 'From: ceo@company-secure.com | Reply-To: payments@company-secure.com',
       rawValue: 'company-secure.com',
-      interpretation: 'Attackers often use a legitimate-looking From address but route responses to a controlled domain.',
+      interpretation:
+        'Attackers often use a legitimate-looking From address but route responses to a controlled domain.',
     },
     {
       id: 'EV-003',
@@ -68,7 +71,8 @@ export const SAMPLE_INVESTIGATION: InvestigationResult = {
       finding: 'Domain closely mimics legitimate brand (company.com)',
       source: 'company-secure-login.com vs company.com',
       rawValue: 'company-secure-login.com',
-      interpretation: 'Visual similarity to a trusted brand suggests a credential harvesting or BEC campaign.',
+      interpretation:
+        'Visual similarity to a trusted brand suggests a credential harvesting or BEC campaign.',
     },
     {
       id: 'EV-004',
@@ -88,14 +92,38 @@ export const SAMPLE_INVESTIGATION: InvestigationResult = {
       finding: 'Model confidence: BEC 78%, Phishing 92%',
       source: 'ML classifier v2.4',
       rawValue: '78%',
-      interpretation: 'Machine learning model flags this as business email compromise with high confidence.',
+      interpretation:
+        'Machine learning model flags this as business email compromise with high confidence.',
     },
   ],
   iocs: [
-    { type: 'domain', value: 'company-secure-login.com', severity: 'high', reputation: 'malicious', firstSeen: '2024-01-10' },
-    { type: 'domain', value: 'company-secure.com', severity: 'medium', reputation: 'suspicious', firstSeen: '2024-01-12' },
-    { type: 'ip', value: '198.51.100.42', severity: 'high', reputation: 'malicious', firstSeen: '2024-01-11' },
-    { type: 'url', value: 'https://company-secure-login.com/verify', severity: 'high', reputation: 'malicious' },
+    {
+      type: 'domain',
+      value: 'company-secure-login.com',
+      severity: 'high',
+      reputation: 'malicious',
+      firstSeen: '2024-01-10',
+    },
+    {
+      type: 'domain',
+      value: 'company-secure.com',
+      severity: 'medium',
+      reputation: 'suspicious',
+      firstSeen: '2024-01-12',
+    },
+    {
+      type: 'ip',
+      value: '198.51.100.42',
+      severity: 'high',
+      reputation: 'malicious',
+      firstSeen: '2024-01-11',
+    },
+    {
+      type: 'url',
+      value: 'https://company-secure-login.com/verify',
+      severity: 'high',
+      reputation: 'malicious',
+    },
   ],
   ml: {
     benign: 1,
@@ -105,18 +133,39 @@ export const SAMPLE_INVESTIGATION: InvestigationResult = {
     malware: 12,
   },
   timeline: [
-    { timestamp: '2024-01-15T09:20:11Z', event: 'Email received from 198.51.100.42', source: 'Received header' },
+    {
+      timestamp: '2024-01-15T09:20:11Z',
+      event: 'Email received from 198.51.100.42',
+      source: 'Received header',
+    },
     { timestamp: '2024-01-15T09:20:12Z', event: 'SPF check failed', source: 'Authentication' },
-    { timestamp: '2024-01-15T09:20:13Z', event: 'DKIM signature invalid', source: 'Authentication' },
-    { timestamp: '2024-01-15T09:20:14Z', event: 'URLs extracted: 2 (1 suspicious)', source: 'URL analysis' },
-    { timestamp: '2024-01-15T09:20:15Z', event: 'ML classification: BEC (78%)', source: 'ML model' },
-    { timestamp: '2024-01-15T09:20:16Z', event: 'Verdict: MALICIOUS — Risk 94/100', source: 'Aggregator' },
+    {
+      timestamp: '2024-01-15T09:20:13Z',
+      event: 'DKIM signature invalid',
+      source: 'Authentication',
+    },
+    {
+      timestamp: '2024-01-15T09:20:14Z',
+      event: 'URLs extracted: 2 (1 suspicious)',
+      source: 'URL analysis',
+    },
+    {
+      timestamp: '2024-01-15T09:20:15Z',
+      event: 'ML classification: BEC (78%)',
+      source: 'ML model',
+    },
+    {
+      timestamp: '2024-01-15T09:20:16Z',
+      event: 'Verdict: MALICIOUS — Risk 94/100',
+      source: 'Aggregator',
+    },
   ],
-  summary: 'This email is a sophisticated business email compromise (BEC) attempt impersonating a company executive. The sender domain closely mimics the legitimate brand, SPF/DKIM/DMARC all fail, and the message combines urgency with a payment request — a classic BEC pattern. The embedded URL points to a newly registered domain designed to harvest credentials. Immediate action required: do not click links, do not process any payment request, and report to your SOC.',
+  summary:
+    'This email is a sophisticated business email compromise (BEC) attempt impersonating a company executive. The sender domain closely mimics the legitimate brand, SPF/DKIM/DMARC all fail, and the message combines urgency with a payment request — a classic BEC pattern. The embedded URL points to a newly registered domain designed to harvest credentials. Immediate action required: do not click links, do not process any payment request, and report to your SOC.',
   recommendations: [
     'Do not click any links or download attachments in this email.',
     'Do not process any payment requests contained in this message.',
-    'Verify the sender\'s identity through a secondary channel (phone call).',
+    "Verify the sender's identity through a secondary channel (phone call).",
     'Report this email to your SOC / security team immediately.',
     'Check if any recipients clicked the embedded link and isolate affected machines.',
     'Add company-secure-login.com and 198.51.100.42 to your blocklist.',

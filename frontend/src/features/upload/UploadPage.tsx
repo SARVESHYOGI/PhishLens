@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Upload, Shield, Radar, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -6,6 +6,16 @@ export function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [rejectedName, setRejectedName] = useState<string | null>(null);
+  const scanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (scanTimer.current) clearTimeout(scanTimer.current);
+    };
+  }, []);
+
+  const isEml = (file: File) => file.name.toLowerCase().endsWith('.eml');
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -18,35 +28,42 @@ export function UploadPage() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith('.eml')) {
+    if (file && isEml(file)) {
       setUploadedFile(file);
+      setRejectedName(null);
+    } else if (file) {
+      setRejectedName(file.name);
     }
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.name.endsWith('.eml')) {
+    if (file && isEml(file)) {
       setUploadedFile(file);
+      setRejectedName(null);
+    } else if (file) {
+      setRejectedName(file.name);
     }
   };
 
   const handleScan = () => {
     if (!uploadedFile) return;
     setIsScanning(true);
-    setTimeout(() => setIsScanning(false), 3000);
+    setRejectedName(null);
+    scanTimer.current = setTimeout(() => setIsScanning(false), 3000);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12">
-      <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-6">
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center py-12">
+      <div className="mb-12 text-center">
+        <div className="bg-primary/10 text-primary mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium">
           <Shield className="h-3.5 w-3.5" />
           AI-Powered Email Forensics
         </div>
-        <h1 className="text-4xl font-bold text-foreground mb-4 tracking-tight">
+        <h1 className="text-foreground mb-4 text-4xl font-bold tracking-tight">
           Analyze suspicious emails before they strike
         </h1>
-        <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+        <p className="text-muted-foreground mx-auto max-w-xl text-lg">
           Upload a .eml file and get a complete AI forensic investigation in seconds.
         </p>
       </div>
@@ -70,20 +87,26 @@ export function UploadPage() {
           className="hidden"
           id="file-upload"
         />
-        <label htmlFor="file-upload" className="cursor-pointer">
+        <label
+          htmlFor="file-upload"
+          className="cursor-pointer"
+          aria-label="Upload a .eml email file"
+        >
           <div className="flex flex-col items-center gap-4">
-            <div className={`rounded-full p-4 transition-colors ${uploadedFile ? 'bg-success/20' : 'bg-secondary'}`}>
+            <div
+              className={`rounded-full p-4 transition-colors ${uploadedFile ? 'bg-success/20' : 'bg-secondary'}`}
+            >
               {uploadedFile ? (
-                <CheckCircle2 className="h-8 w-8 text-success" />
+                <CheckCircle2 className="text-success h-8 w-8" />
               ) : (
-                <Upload className="h-8 w-8 text-primary" />
+                <Upload className="text-primary h-8 w-8" />
               )}
             </div>
             <div>
-              <p className="text-foreground font-medium text-lg">
+              <p className="text-foreground text-lg font-medium">
                 {uploadedFile ? uploadedFile.name : 'Drop your .eml or click to browse'}
               </p>
-              <p className="text-muted-foreground text-sm mt-1">Only .eml files supported</p>
+              <p className="text-muted-foreground mt-1 text-sm">Only .eml files supported</p>
             </div>
           </div>
         </label>
@@ -91,28 +114,40 @@ export function UploadPage() {
         {uploadedFile && !isScanning && (
           <button
             onClick={handleScan}
-            className="mt-6 px-8 py-3 bg-primary text-background font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-glow"
+            className="bg-primary text-background hover:bg-primary/90 shadow-glow mt-6 rounded-lg px-8 py-3 font-semibold transition-colors"
           >
             Analyze Email
           </button>
         )}
       </div>
 
+      {rejectedName && (
+        <p className="text-destructive mt-4 text-sm">
+          "{rejectedName}" is not a .eml file. Only .eml files are supported.
+        </p>
+      )}
+
       {isScanning && (
-        <div className="w-full max-w-2xl mt-6 rounded-2xl border border-border bg-card p-8">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="border-border bg-card mt-6 w-full max-w-2xl rounded-2xl border p-8">
+          <div className="mb-4 flex items-center gap-3">
             <div className="relative">
-              <Radar className="h-6 w-6 text-primary animate-pulse" />
-              <div className="absolute inset-0 h-6 w-6 text-primary animate-ping opacity-20">
+              <Radar className="text-primary h-6 w-6 animate-pulse" />
+              <div className="text-primary absolute inset-0 h-6 w-6 animate-ping opacity-20">
                 <Radar className="h-6 w-6" />
               </div>
             </div>
             <span className="text-foreground font-medium">Scanning email...</span>
           </div>
           <div className="space-y-2">
-            {['Parsing headers', 'Extracting URLs', 'Checking authentication', 'Running ML model', 'Generating report'].map((step) => (
+            {[
+              'Parsing headers',
+              'Extracting URLs',
+              'Checking authentication',
+              'Running ML model',
+              'Generating report',
+            ].map((step) => (
               <div key={step} className="flex items-center gap-3 text-sm">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                <div className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
                 <span className="text-muted-foreground">{step}</span>
               </div>
             ))}
@@ -134,9 +169,9 @@ export function UploadPage() {
         {['SPF/DKIM/DMARC', 'URL & Domain Intel', 'AI Investigator'].map((badge) => (
           <span
             key={badge}
-            className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground"
+            className="bg-secondary text-secondary-foreground inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            <span className="bg-primary h-1.5 w-1.5 rounded-full" />
             {badge}
           </span>
         ))}
