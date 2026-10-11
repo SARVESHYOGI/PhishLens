@@ -1,0 +1,34 @@
+{
+  "project": "MailSleuth AI",
+  "model": "TF-IDF + Logistic Regression",
+  "dataset_revision": "c9440a2fd59c3992e53c361f6afbb4fa8952cd17",
+  "task": "Binary email text classification",
+  "label_mapping": {
+    "0": "benign/legitimate according to dataset",
+    "1": "phishing/spam according to dataset"
+  },
+  "validation": {
+    "accuracy": 0.9816,
+    "roc_auc": 0.998
+  },
+  "test": {
+    "rows": 40604,
+    "accuracy": 0.9812,
+    "roc_auc": 0.9981,
+    "precision_label_0": 0.982,
+    "recall_label_0": 0.9829,
+    "f1_label_0": 0.9824,
+    "precision_label_1": 0.9803,
+    "recall_label_1": 0.9792,
+    "f1_label_1": 0.9797,
+    "true_negatives": 21366,
+    "false_positives": 372,
+    "false_negatives": 392,
+    "true_positives": 18474
+  },
+  "limitations": [
+    "Binary dataset labels do not establish verified phishing ground truth",
+    "Text-only baseline; no header or attachment forensics",
+    "Not yet a multiclass forensic classifier"
+  ]
+}
