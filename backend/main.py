@@ -1,5 +1,12 @@
+import uvicorn
+
+from app.api import create_app
+
+app = create_app()
+
+
 def main():
-    print("Hello from backend!")
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 if __name__ == "__main__":

@@ -1,21 +1,25 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { Upload, Shield, Radar, CheckCircle2 } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { Upload, Shield, Radar, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router';
+import { useClassifyEml } from '@/hooks/useClassifyEml';
 
 export function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [rejectedName, setRejectedName] = useState<string | null>(null);
-  const scanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (scanTimer.current) clearTimeout(scanTimer.current);
-    };
-  }, []);
+  const classify = useClassifyEml();
 
   const isEml = (file: File) => file.name.toLowerCase().endsWith('.eml');
+
+  const selectFile = (file: File) => {
+    if (isEml(file)) {
+      setUploadedFile(file);
+      setRejectedName(null);
+      classify.reset();
+    } else {
+      setRejectedName(file.name);
+    }
+  };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -24,34 +28,26 @@ export function UploadPage() {
 
   const handleDragLeave = useCallback(() => setIsDragging(false), []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && isEml(file)) {
-      setUploadedFile(file);
-      setRejectedName(null);
-    } else if (file) {
-      setRejectedName(file.name);
-    }
-  }, []);
+    if (file) selectFile(file);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && isEml(file)) {
-      setUploadedFile(file);
-      setRejectedName(null);
-    } else if (file) {
-      setRejectedName(file.name);
-    }
+    if (file) selectFile(file);
   };
 
   const handleScan = () => {
-    if (!uploadedFile) return;
-    setIsScanning(true);
+    if (!uploadedFile || classify.isPending) return;
     setRejectedName(null);
-    scanTimer.current = setTimeout(() => setIsScanning(false), 3000);
+    classify.mutate(uploadedFile);
   };
+
+  const result = classify.data;
+  const isScanning = classify.isPending;
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center py-12">
@@ -64,7 +60,7 @@ export function UploadPage() {
           Analyze suspicious emails before they strike
         </h1>
         <p className="text-muted-foreground mx-auto max-w-xl text-lg">
-          Upload a .eml file and get a complete AI forensic investigation in seconds.
+          Upload a .eml file to run the baseline text classifier on its subject and body.
         </p>
       </div>
 
@@ -86,6 +82,7 @@ export function UploadPage() {
           onChange={handleFileChange}
           className="hidden"
           id="file-upload"
+          disabled={isScanning}
         />
         <label
           htmlFor="file-upload"
@@ -132,26 +129,47 @@ export function UploadPage() {
           <div className="mb-4 flex items-center gap-3">
             <div className="relative">
               <Radar className="text-primary h-6 w-6 animate-pulse" />
-              <div className="text-primary absolute inset-0 h-6 w-6 animate-ping opacity-20">
-                <Radar className="h-6 w-6" />
-              </div>
             </div>
-            <span className="text-foreground font-medium">Scanning email...</span>
+            <span className="text-foreground font-medium">Running text classifier...</span>
           </div>
-          <div className="space-y-2">
-            {[
-              'Parsing headers',
-              'Extracting URLs',
-              'Checking authentication',
-              'Running ML model',
-              'Generating report',
-            ].map((step) => (
-              <div key={step} className="flex items-center gap-3 text-sm">
-                <div className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
-                <span className="text-muted-foreground">{step}</span>
-              </div>
-            ))}
+        </div>
+      )}
+
+      {classify.isError && (
+        <div className="border-destructive/30 bg-destructive/5 mt-6 flex w-full max-w-2xl items-start gap-3 rounded-2xl border p-6">
+          <AlertTriangle className="text-destructive mt-0.5 h-5 w-5 shrink-0" />
+          <p className="text-destructive text-sm">{classify.error.message}</p>
+        </div>
+      )}
+
+      {result && (
+        <div className="border-border bg-card mt-6 w-full max-w-2xl space-y-4 rounded-2xl border p-8">
+          <div>
+            <p className="text-muted-foreground text-xs font-medium uppercase">
+              Text classifier result (baseline model)
+            </p>
+            <h2 className="text-foreground mt-1 text-2xl font-bold">
+              {result.prediction.name === 'phishing_or_spam' ? 'Flagged as phishing or spam' : 'Classified as benign'}
+            </h2>
           </div>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <dt className="text-muted-foreground">Benign</dt>
+              <dd className="text-foreground font-semibold">
+                {(result.probabilities.benign * 100).toFixed(1)}%
+              </dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Phishing or spam</dt>
+              <dd className="text-foreground font-semibold">
+                {(result.probabilities.phishing_or_spam * 100).toFixed(1)}%
+              </dd>
+            </div>
+          </dl>
+          <p className="text-muted-foreground border-border border-t pt-4 text-xs">
+            {result.disclaimer} This does not cover headers, SPF/DKIM/DMARC, URLs, attachments,
+            spoofing, or business email compromise, and is not an overall forensic verdict.
+          </p>
         </div>
       )}
 
