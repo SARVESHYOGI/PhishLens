@@ -1,5 +1,5 @@
 import logging
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -36,7 +36,7 @@ def to_response(result: Classification) -> ClassifyResponse:
 
 def create_app(model_path: Path = MODEL_PATH) -> FastAPI:
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
         app.state.classifier = load_model(model_path)
         yield
 
