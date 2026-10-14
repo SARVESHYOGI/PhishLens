@@ -1508,7 +1508,25 @@ and:
 
 ---
 
-# PHASE 17 — ML Explainability
+# PHASE 16 — Train ML Model
+
+Start simple.
+
+## 16.1 Baseline
+
+Done.
+
+The TF-IDF + logistic regression baseline is saved in `backend/ml/models/baseline_model.pkl` and
+loaded at startup. Test metrics (accuracy 0.9812, ROC-AUC 0.9981 on 40,604 rows) reproduce
+on the Hugging Face test split at the pinned revision.
+
+## 16.2 Swappable classifier interface
+
+The backend now depends on a `TextClassifier` interface so a different model can be swapped in
+without changing the API. The default provider is `baseline`. A future provider (e.g. Hugging
+Face BERT) can be selected with the `PHISHLENS_CLASSIFIER` environment variable.
+
+---
 
 Don't only output:
 
@@ -1971,29 +1989,16 @@ Anything inferred should be explicitly labeled as **inferred**, not observed.
 Create APIs such as:
 
 ```text
-POST /emails/upload
+POST /api/v1/ml/classify
 
-GET /emails/{id}
+POST /api/v1/ml/classify-eml
 
-GET /emails/{id}/headers
-
-GET /emails/{id}/authentication
-
-GET /emails/{id}/urls
-
-GET /emails/{id}/domains
-
-GET /emails/{id}/iocs
-
-GET /emails/{id}/analysis
-
-GET /emails/{id}/report
 ```
 
 Main endpoint:
 
 ```text
-POST /emails/{id}/investigate
+POST /api/v1/ml/classify
 ```
 
 ---
@@ -2213,6 +2218,16 @@ Precision
 Recall
 F1
 ```
+
+Baseline metrics reproduction script:
+
+```powershell
+cd backend
+uv run --with datasets python scripts/verify_baseline_metrics.py
+```
+
+Reproduces accuracy, ROC-AUC, and the confusion matrix on the 40,604-row test split
+at the pinned dataset revision.
 
 ---
 
