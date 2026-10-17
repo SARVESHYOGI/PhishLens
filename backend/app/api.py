@@ -11,7 +11,13 @@ from starlette.concurrency import run_in_threadpool
 
 from app.config import MAX_REQUEST_BYTES, MODEL_PATH
 from app.eml import EmlParseError, extract_subject_and_body
-from app.ml_inference import Classification, classify_email, load_model
+from app.ml_inference import (
+    Classification,
+    InferenceError,
+    ModelLoadError,
+    classify_email,
+    load_model,
+)
 from app.schemas import ClassifyRequest, ClassifyResponse, Prediction, Probabilities
 
 logger = logging.getLogger(__name__)

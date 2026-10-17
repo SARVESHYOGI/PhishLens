@@ -1,4 +1,5 @@
 import math
+import pickle
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -33,7 +34,7 @@ def load_model(path: Path) -> Any:
         )
     try:
         model = joblib.load(path)
-    except Exception as exc:
+    except (OSError, ValueError, pickle.UnpicklingError, EOFError, KeyError, AttributeError, ImportError) as exc:
         raise ModelLoadError(
             f"Could not load model artifact '{path.name}' ({type(exc).__name__}). "
             "The file may be corrupted or built with an incompatible scikit-learn version."
