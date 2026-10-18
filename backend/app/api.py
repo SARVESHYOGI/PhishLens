@@ -11,26 +11,20 @@ from starlette.concurrency import run_in_threadpool
 
 from app.config import MAX_REQUEST_BYTES, MODEL_PATH
 from app.eml import EmlParseError, extract_subject_and_body
-from app.ml_inference import (
-    Classification,
-    InferenceError,
-    ModelLoadError,
-    classify_email,
-    load_model,
-)
+from app.providers.base import Classification, InferenceError, ModelLoadError
+from app.providers.registry import BASELINE, load_classifier
 from app.schemas import ClassifyRequest, ClassifyResponse, Prediction, Probabilities
 
 logger = logging.getLogger(__name__)
 
-MODEL_NAME = "tfidf_logistic_regression_baseline"
 DISCLAIMER = (
     "This is a binary text-classification result, not a verified forensic verdict."
 )
 
 
-def to_response(result: Classification) -> ClassifyResponse:
+def to_response(model: str, result: Classification) -> ClassifyResponse:
     return ClassifyResponse(
-        model=MODEL_NAME,
+        model=model,
         prediction=Prediction(label=result.label, name=result.name),
         probabilities=Probabilities(
             benign=result.benign,
@@ -40,10 +34,10 @@ def to_response(result: Classification) -> ClassifyResponse:
     )
 
 
-def create_app(model_path: Path = MODEL_PATH) -> FastAPI:
+def create_app(model_path: Path = MODEL_PATH, classifier_name: str = BASELINE) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-        app.state.classifier = load_model(model_path)
+        app.state.classifier = load_classifier(classifier_name, model_path)
         yield
 
     app = FastAPI(title="MailSleuth AI", lifespan=lifespan)
@@ -66,14 +60,15 @@ def create_app(model_path: Path = MODEL_PATH) -> FastAPI:
         return JSONResponse(status_code=422, content={"detail": errors})
 
     def run_classification(request: Request, subject: str, body: str) -> ClassifyResponse:
+        classifier = request.app.state.classifier
         try:
-            result = classify_email(request.app.state.classifier, subject, body)
-        except Exception as exc:
+            result = classifier.predict(subject, body)
+        except (ModelLoadError, InferenceError) as exc:
             logger.error("ML classification failed: %s", type(exc).__name__)
             raise HTTPException(
                 status_code=500, detail="Classification failed. Please try again later."
             ) from None
-        return to_response(result)
+        return to_response(classifier.name, result)
 
     @app.post("/api/v1/ml/classify", response_model=ClassifyResponse)
     def classify(payload: ClassifyRequest, request: Request) -> ClassifyResponse:
