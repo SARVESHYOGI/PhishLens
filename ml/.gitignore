@@ -1,4 +1,28 @@
+# Virtual environments and bytecode
 .venv/
 __pycache__/
+*.py[cod]
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Tooling caches
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.env
+
+# Deployment
 .vercel/
+
+# Generated data (keep the directory, ignore the contents)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep

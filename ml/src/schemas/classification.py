@@ -1,15 +1,20 @@
+"""Request and response contracts for the classification endpoints."""
+
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from serving.config import MAX_BODY_CHARS, MAX_SUBJECT_CHARS
+from config import settings
 
 
 class ClassifyRequest(BaseModel):
+    """A single email to classify."""
+
     model_config = ConfigDict(extra="forbid")
 
-    subject: str = Field(default="", max_length=MAX_SUBJECT_CHARS)
-    body: str = Field(min_length=1, max_length=MAX_BODY_CHARS)
+    model: str = Field(default=settings.default_model, max_length=64)
+    subject: str = Field(default="", max_length=settings.max_subject_chars)
+    body: str = Field(min_length=1, max_length=settings.max_body_chars)
 
     @field_validator("subject", mode="before")
     @classmethod
@@ -30,21 +35,36 @@ class ClassifyRequest(BaseModel):
 
 
 class Prediction(BaseModel):
+    """Winning label as an index and a human-readable name."""
+
     label: int
     name: str
 
 
 class Probabilities(BaseModel):
+    """Per-class probabilities that sum to 1.0."""
+
     benign: float
     phishing_or_spam: float
 
 
 class ClassifyResponse(BaseModel):
+    """Result of classifying one email."""
+
     model: str
     prediction: Prediction
     probabilities: Probabilities
     disclaimer: str
 
 
+class ModelInfo(BaseModel):
+    """One entry in the list of servable models."""
+
+    name: str
+    default: bool
+
+
 class ModelsResponse(BaseModel):
-    available: list[str]
+    """Response body for the model listing endpoint."""
+
+    available: list[ModelInfo]

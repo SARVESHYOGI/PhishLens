@@ -1,7 +1,7 @@
 [project]
-name = "ml"
+name = "phishlens-ml"
 version = "0.1.0"
-description = "PhishLens Machine Learning Pipeline"
+description = "PhishLens machine learning service: training, evaluation, and model serving."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -21,7 +21,8 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
+addopts = "-ra"
 
 [[tool.uv.index]]
 name = "pytorch"
